@@ -3,12 +3,25 @@ extends Node
 
 var network_manager: NetworkManager
 var chunked_map: ChunkedMap
+var entity_manager: EntityManager
+
+func _ready():
+	entity_manager.entity_spawned.connect(_on_entity_spawned)
+	entity_manager.entity_despawned.connect(_on_entity_despawned)
 
 func get_network_state(peer_id: int):
 	return network_manager.get_network_state(peer_id, "NetworkedMapState")
 
 @rpc("authority", "call_remote", "reliable")
 func c_set_tiles(_level: int, _tiles: Array):
+	pass
+
+@rpc("authority", "call_remote", "reliable")
+func c_spawn_entity(_entity_id: int, _position: Vector3):
+	pass
+
+@rpc("authority", "call_remote", "reliable")
+func c_despawn_entity(_entity_id: int):
 	pass
 
 func _on_networked_camera_camera_moved(peer_id: int, _old_position: Vector2i, position: Vector2i):
@@ -32,6 +45,23 @@ func _watch_chunk(peer_id: int, state: NetworkedMapState, cell: Vector3i):
 		var tiles = chunked_map.get_tiles_in_cell(cell)
 		if tiles.size() > 0:
 			c_set_tiles.rpc_id(peer_id, cell.z, tiles)
+		var entities = entity_manager.get_entities_in_cell(cell)
+		for entity in entities:
+			c_spawn_entity.rpc_id(peer_id, entity.position)
 
 func _unwatch_chunk(_peer_id: int, state: NetworkedMapState, cell: Vector3i):
 	state.watched_chunks.erase(cell)
+
+func _on_entity_spawned(entity: Entity):
+	for peer_id in multiplayer.get_peers():
+		var state = get_network_state(peer_id)
+		var watched_chunks = state.watched_chunks
+		if watched_chunks.has(entity.cell):
+			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
+
+func _on_entity_despawned(entity: Entity):
+	for peer_id in multiplayer.get_peers():
+		var state = get_network_state(peer_id)
+		var watched_chunks = state.watched_chunks
+		if watched_chunks.has(entity.cell):
+			c_despawn_entity.rpc_id(peer_id, entity.id)

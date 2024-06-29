@@ -46,8 +46,8 @@ func get_tile_at(x: int, y: int, z: int):
 func _get_chunk_key(x: int, y: int, z: int):
 	return "%d,%d,%d" % [x, y, z]
 
-func get_chunk_cell(x: int, y: int, z: int) -> Vector3i:
-	return Vector3i(floor(x / float(chunk_size)), floor(y / float(chunk_size)), z)
+func get_chunk_cell(x: float, y: float, z: float) -> Vector3i:
+	return Vector3i(floor(x / float(chunk_size)), floor(y / float(chunk_size)), floor(z))
 
 func get_chunk_at(x: int, y: int, z: int):
 	var chunk_cell = get_chunk_cell(x, y, z)
