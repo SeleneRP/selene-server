@@ -1,0 +1,150 @@
+[gd_scene load_steps=26 format=3 uid="uid://b23cn84ocwhon"]
+
+[ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
+[ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
+[ext_resource type="Script" path="res://visual_server.gd" id="3_sogq1"]
+[ext_resource type="Script" path="res://bundles/bundle_installer.gd" id="4_mcltj"]
+[ext_resource type="Script" path="res://scripting/bundle_script_library.gd" id="4_n6o33"]
+[ext_resource type="Script" path="res://scripting/map_script_library.gd" id="5_3cf2n"]
+[ext_resource type="Script" path="res://bundles/client_bundle_cache_manager.gd" id="5_qfgg5"]
+[ext_resource type="Script" path="res://scripting/server_script_events.gd" id="6_f6olg"]
+[ext_resource type="Script" path="res://server_config.gd" id="6_isxax"]
+[ext_resource type="Script" path="res://scripting/camera_script_library.gd" id="7_w8dwx"]
+[ext_resource type="Script" path="res://bundles/bundle_builder.gd" id="8_lxchw"]
+[ext_resource type="Script" path="res://scripting/system_script_library.gd" id="8_vc8pj"]
+[ext_resource type="Script" path="res://scripting/entity_script_library.gd" id="9_5reh8"]
+[ext_resource type="Script" path="res://maps/map_manager.gd" id="9_bbukl"]
+[ext_resource type="Script" path="res://network/network_listener.gd" id="10_6jcv2"]
+[ext_resource type="Script" path="res://common/maps/chunked_map.gd" id="10_m7qjm"]
+[ext_resource type="Script" path="res://scripting/controller_script_library.gd" id="10_ql5qa"]
+[ext_resource type="Script" path="res://persistence/id_mappings_database.gd" id="11_a8x3t"]
+[ext_resource type="Script" path="res://bundles/bundle_manager.gd" id="12_ay6mw"]
+[ext_resource type="Script" path="res://network/networked_handshake.gd" id="12_bmodw"]
+[ext_resource type="Script" path="res://network/network_manager.gd" id="12_sahqm"]
+[ext_resource type="Script" path="res://network/networked_mappings.gd" id="13_dfpsd"]
+[ext_resource type="Script" path="res://common/id_mappings_cache.gd" id="17_lk4ih"]
+[ext_resource type="Script" path="res://network/networked_map.gd" id="20_sa8v8"]
+[ext_resource type="Script" path="res://network/networked_camera.gd" id="21_yyyb7"]
+
+[node name="SeleneRoot" type="Node"]
+
+[node name="Server" type="Node" parent="."]
+script = ExtResource("1_nxu2j")
+
+[node name="VisualServer" type="CanvasLayer" parent="Server"]
+script = ExtResource("3_sogq1")
+
+[node name="Panel" type="Panel" parent="Server/VisualServer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Server/VisualServer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LogOutput" type="RichTextLabel" parent="Server/VisualServer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+bbcode_enabled = true
+scroll_following = true
+selection_enabled = true
+
+[node name="TextEdit" type="TextEdit" parent="Server/VisualServer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="ScriptManager" type="Node" parent="Server"]
+script = ExtResource("3_crgm2")
+
+[node name="BundleScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("4_n6o33")
+
+[node name="MapScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("5_3cf2n")
+
+[node name="CameraScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("7_w8dwx")
+
+[node name="ServerScriptEvents" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("6_f6olg")
+
+[node name="SystemScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("8_vc8pj")
+
+[node name="EntityScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("9_5reh8")
+
+[node name="ControllerScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("10_ql5qa")
+
+[node name="BundleBuilder" type="Node" parent="Server"]
+script = ExtResource("8_lxchw")
+
+[node name="BundleInstaller" type="Node" parent="Server"]
+script = ExtResource("4_mcltj")
+
+[node name="ClientBundleCacheManager" type="Node" parent="Server"]
+script = ExtResource("5_qfgg5")
+
+[node name="ServerConfig" type="Node" parent="Server"]
+script = ExtResource("6_isxax")
+
+[node name="MapManager" type="Node" parent="Server"]
+script = ExtResource("9_bbukl")
+
+[node name="NetworkListener" type="Node" parent="Server"]
+script = ExtResource("10_6jcv2")
+
+[node name="IdMappingsDatabase" type="Node" parent="Server"]
+script = ExtResource("11_a8x3t")
+
+[node name="IdMappingsCache" type="Node" parent="Server"]
+script = ExtResource("17_lk4ih")
+
+[node name="BundleManager" type="Node" parent="Server"]
+script = ExtResource("12_ay6mw")
+
+[node name="ChunkedMap" type="Node" parent="Server"]
+script = ExtResource("10_m7qjm")
+
+[node name="NetworkManager" type="Node" parent="Server" node_paths=PackedStringArray("handler_container", "state_container")]
+script = ExtResource("12_sahqm")
+handler_container = NodePath("../../NetworkHandlers")
+state_container = NodePath("../../NetworkStates")
+
+[node name="NetworkStates" type="Node" parent="."]
+
+[node name="NetworkHandlers" type="Node" parent="."]
+
+[node name="NetworkedHandshake" type="Node" parent="NetworkHandlers"]
+script = ExtResource("12_bmodw")
+
+[node name="NetworkedMappings" type="Node" parent="NetworkHandlers"]
+script = ExtResource("13_dfpsd")
+
+[node name="NetworkedMap" type="Node" parent="NetworkHandlers"]
+script = ExtResource("20_sa8v8")
+
+[node name="NetworkedCamera" type="Node" parent="NetworkHandlers"]
+script = ExtResource("21_yyyb7")
+
+[connection signal="server_started" from="Server" to="Server/ScriptManager/ServerScriptEvents" method="_on_server_server_started"]
+[connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
+[connection signal="peer_disconnected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_disconnected"]
+[connection signal="id_generated" from="Server/IdMappingsDatabase" to="Server/IdMappingsCache" method="_on_id_mappings_database_id_generated"]
+[connection signal="peer_authenticated" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_authenticated"]
+[connection signal="peer_authentication_failed" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_authentication_failed"]
+[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_bundles_verified"]
+[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="NetworkHandlers/NetworkedMappings" method="_on_networked_handshake_peer_bundles_verified"]
+[connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_completed_loading"]
+[connection signal="peer_joined_queue" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_joined_queue"]
+[connection signal="camera_moved" from="NetworkHandlers/NetworkedCamera" to="NetworkHandlers/NetworkedMap" method="_on_networked_camera_camera_moved"]

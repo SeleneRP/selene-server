@@ -1,0 +1,4 @@
+class_name NetworkedControllerState
+extends Node
+
+var controlled_entity_id: int
