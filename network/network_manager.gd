@@ -22,6 +22,12 @@ func for_peer(peer_id: int):
 	if peer_node == null:
 		peer_node = peer_template.instantiate()
 		peer_node.name = str(peer_id)
+		for child in peer_node.get_children():
+			if "peer_id" in child:
+				child.peer_id = peer_id
+			for key in provided.keys():
+				if key in child:
+					child[key] = provided[key]
 		state_container.add_child(peer_node)
 	return peer_node
 
