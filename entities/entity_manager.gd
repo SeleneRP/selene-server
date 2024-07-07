@@ -12,7 +12,7 @@ func create_entity():
     entity.id = last_added_id
     entity.name = str(last_added_id)
     add_child(entity)
-    return last_added_id
+    return entity
 
 func get_entity(entity_id: int) -> Entity:
     return get_node_or_null(str(entity_id))
