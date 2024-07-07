@@ -3,6 +3,9 @@ extends Node
 
 signal entity_spawned(entity: Entity)
 signal entity_despawned(entity: Entity)
+signal entity_visual_added(entity: Entity, visual: EntityVisual)
+signal entity_visual_changed(entity: Entity, visual: EntityVisual)
+signal entity_visual_removed(entity: Entity, visual: EntityVisual)
 
 var last_added_id = 0
 

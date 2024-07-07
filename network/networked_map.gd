@@ -8,6 +8,9 @@ var entity_manager: EntityManager
 func _ready():
 	entity_manager.entity_spawned.connect(_on_entity_spawned)
 	entity_manager.entity_despawned.connect(_on_entity_despawned)
+	entity_manager.entity_visual_added.connect(_on_entity_visual_added)
+	entity_manager.entity_visual_changed.connect(_on_entity_visual_changed)
+	entity_manager.entity_visual_removed.connect(_on_entity_visual_removed)
 
 func get_network_state(peer_id: int):
 	return network_manager.get_network_state(peer_id, "NetworkedMapState")
@@ -22,6 +25,18 @@ func c_spawn_entity(_entity_id: int, _position: Vector3):
 
 @rpc("authority", "call_remote", "reliable")
 func c_despawn_entity(_entity_id: int):
+	pass
+
+@rpc("authority", "call_remote", "reliable")
+func c_add_entity_visual(_entity_id: int, _visual_name: String):
+	pass
+
+@rpc("authority", "call_remote", "reliable")
+func c_set_entity_visual_tint(_entity_id: int, _visual_id: int, _color: Color):
+	pass
+
+@rpc("authority", "call_remote", "reliable")
+func c_remove_entity_visual(_entity_id: int, _visual_id: int):
 	pass
 
 func _on_networked_camera_camera_moved(peer_id: int, _old_position: Vector2i, position: Vector2i):
@@ -65,3 +80,24 @@ func _on_entity_despawned(entity: Entity):
 		var watched_chunks = state.watched_chunks
 		if watched_chunks.has(entity.cell):
 			c_despawn_entity.rpc_id(peer_id, entity.id)
+
+func _on_entity_visual_added(entity: Entity, visual: EntityVisual):
+	for peer_id in multiplayer.get_peers():
+		var state = get_network_state(peer_id)
+		var watched_chunks = state.watched_chunks
+		if watched_chunks.has(entity.cell):
+			c_add_entity_visual.rpc_id(peer_id, entity.id, visual.name)
+
+func _on_entity_visual_changed(entity: Entity, visual: EntityVisual):
+	for peer_id in multiplayer.get_peers():
+		var state = get_network_state(peer_id)
+		var watched_chunks = state.watched_chunks
+		if watched_chunks.has(entity.cell):
+			c_set_entity_visual_tint.rpc_id(peer_id, entity.id, visual.color)
+
+func _on_entity_visual_removed(entity: Entity, visual: EntityVisual):
+	for peer_id in multiplayer.get_peers():
+		var state = get_network_state(peer_id)
+		var watched_chunks = state.watched_chunks
+		if watched_chunks.has(entity.cell):
+			c_remove_entity_visual.rpc_id(peer_id, entity.id, visual.id)
