@@ -62,7 +62,7 @@ func _watch_chunk(peer_id: int, state: NetworkedMapState, cell: Vector3i):
 			c_set_tiles.rpc_id(peer_id, cell.z, tiles)
 		var entities = entity_manager.get_entities_in_cell(cell)
 		for entity in entities:
-			c_spawn_entity.rpc_id(peer_id, entity.position)
+			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
 
 func _unwatch_chunk(_peer_id: int, state: NetworkedMapState, cell: Vector3i):
 	state.watched_chunks.erase(cell)
