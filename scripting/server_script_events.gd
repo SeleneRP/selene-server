@@ -46,6 +46,14 @@ func _register_client_ready_to_join(callback):
 func _register_client_join(callback):
 	_client_joined_listeners.append(callback)
 
+func _on_network_listener_peer_connected(peer_id: int):
+	for handler in _client_connected_listeners:
+		handler.call(peer_id)
+
+func _on_network_listener_peer_disconnected(peer_id: int):
+	for handler in _client_disconnected_listeners:
+		handler.call(peer_id)
+
 func _on_networked_handshake_peer_joined_queue(peer_id: int, set_status: Callable, proceed: Callable, cancel: Callable):
 	var proceeded = {}
 	for i in range(_client_joined_queue_listeners.size()):

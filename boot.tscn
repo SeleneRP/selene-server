@@ -147,7 +147,9 @@ script = ExtResource("27_yd4gk")
 [node name="NetworkStates" type="Node" parent="."]
 
 [connection signal="server_started" from="Server" to="Server/ScriptManager/ServerScriptEvents" method="_on_server_server_started"]
+[connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/ServerScriptEvents" method="_on_network_listener_peer_connected"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
+[connection signal="peer_disconnected" from="Server/NetworkListener" to="Server/ScriptManager/ServerScriptEvents" method="_on_network_listener_peer_disconnected"]
 [connection signal="peer_disconnected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_disconnected"]
 [connection signal="id_generated" from="Server/IdMappingsDatabase" to="Server/IdMappingsCache" method="_on_id_mappings_database_id_generated"]
 [connection signal="peer_authenticated" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_authenticated"]
