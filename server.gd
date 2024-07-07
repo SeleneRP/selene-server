@@ -114,6 +114,7 @@ func _init_script_manager():
 	script_manager.provide("network_manager", $NetworkManager)
 	script_manager.provide("entity_manager", $EntityManager)
 	script_manager.provide("chunked_map", $ChunkedMap)
+	script_manager.provide("networked_camera", %NetworkHandlers/NetworkedCamera)
 	script_manager.provide("networked_controller", %NetworkHandlers/NetworkedController)
 	script_manager.load_libraries()
 
@@ -139,6 +140,7 @@ func _init_network_manager():
 	network_manager.provide("server_config", $ServerConfig)
 	network_manager.provide("id_mappings_cache", $IdMappingsCache)
 	network_manager.provide("entity_manager", $EntityManager)
+	network_manager.provide("networked_camera", %NetworkHandlers/NetworkedCamera)
 
 func _load_server_script():
 	var script_manager: ScriptManager = $ScriptManager
