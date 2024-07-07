@@ -18,9 +18,17 @@ func add_visual(visual_name: String):
     last_added_visual_id += 1
     var visual = EntityVisual.new()
     visual.id = last_added_visual_id
-    visual.name = visual_name
+    visual.name = "visual#" + str(last_added_visual_id)
+    visual.visual_name = visual_name
     add_child(visual)
     return visual
+
+func get_visuals():
+    var visuals = []
+    for child in get_children():
+        if child is EntityVisual:
+            visuals.append(child)
+    return visuals
 
 func get_data():
     return data

@@ -63,6 +63,8 @@ func _watch_chunk(peer_id: int, state: NetworkedMapState, cell: Vector3i):
 		var entities = entity_manager.get_entities_in_cell(cell)
 		for entity in entities:
 			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
+			for visual in entity.get_visuals():
+				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.visual_name)
 
 func _unwatch_chunk(_peer_id: int, state: NetworkedMapState, cell: Vector3i):
 	state.watched_chunks.erase(cell)
@@ -73,6 +75,8 @@ func _on_entity_spawned(entity: Entity):
 		var watched_chunks = state.watched_chunks
 		if watched_chunks.has(entity.cell):
 			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
+			for visual in entity.get_visuals():
+				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.visual_name)
 
 func _on_entity_despawned(entity: Entity):
 	for peer_id in multiplayer.get_peers():
@@ -86,7 +90,7 @@ func _on_entity_visual_added(entity: Entity, visual: EntityVisual):
 		var state = get_network_state(peer_id)
 		var watched_chunks = state.watched_chunks
 		if watched_chunks.has(entity.cell):
-			c_add_entity_visual.rpc_id(peer_id, entity.id, visual.name)
+			c_add_entity_visual.rpc_id(peer_id, entity.id, visual.visual_name)
 
 func _on_entity_visual_changed(entity: Entity, visual: EntityVisual):
 	for peer_id in multiplayer.get_peers():
