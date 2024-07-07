@@ -17,6 +17,10 @@ func c_set_camera_position(_position: Vector2i, _level: int):
 func c_set_camera_mode(_mode: CameraMode.Keys):
 	pass
 
+@rpc("authority", "call_remote", "reliable")
+func c_set_camera_target(_entity_id: int):
+	pass
+
 @rpc("any_peer", "call_remote", "reliable")
 func s_set_camera_position(position: Vector2i, level: int):
 	_try_set_camera_position_from_client(multiplayer.get_remote_sender_id(), position, level)
@@ -34,6 +38,11 @@ func set_camera_mode(peer_id: int, mode: CameraMode.Keys):
 	var state = get_network_state(peer_id)
 	state.mode = mode
 	c_set_camera_mode.rpc_id(peer_id, mode)
+
+func set_camera_target(peer_id: int, entity_id: int):
+	var state = get_network_state(peer_id)
+	state.target_entity_id = entity_id
+	c_set_camera_target.rpc_id(peer_id, entity_id)
 
 func _try_set_camera_position_from_client(peer_id: int, position: Vector2i, level: int):
 	var state = get_network_state(peer_id)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=28 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
@@ -26,6 +26,7 @@
 [ext_resource type="Script" path="res://network/networked_map.gd" id="20_sa8v8"]
 [ext_resource type="Script" path="res://network/networked_camera.gd" id="21_yyyb7"]
 [ext_resource type="Script" path="res://entities/entity_manager.gd" id="22_07y74"]
+[ext_resource type="Script" path="res://network/networked_controller.gd" id="27_yd4gk"]
 
 [node name="SeleneRoot" type="Node"]
 
@@ -125,9 +126,8 @@ state_container = NodePath("../../NetworkStates")
 [node name="EntityManager" type="Node" parent="Server"]
 script = ExtResource("22_07y74")
 
-[node name="NetworkStates" type="Node" parent="."]
-
 [node name="NetworkHandlers" type="Node" parent="."]
+unique_name_in_owner = true
 
 [node name="NetworkedHandshake" type="Node" parent="NetworkHandlers"]
 script = ExtResource("12_bmodw")
@@ -140,6 +140,11 @@ script = ExtResource("20_sa8v8")
 
 [node name="NetworkedCamera" type="Node" parent="NetworkHandlers"]
 script = ExtResource("21_yyyb7")
+
+[node name="NetworkedController" type="Node" parent="NetworkHandlers"]
+script = ExtResource("27_yd4gk")
+
+[node name="NetworkStates" type="Node" parent="."]
 
 [connection signal="server_started" from="Server" to="Server/ScriptManager/ServerScriptEvents" method="_on_server_server_started"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
