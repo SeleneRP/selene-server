@@ -113,6 +113,7 @@ func _init_script_manager():
 	script_manager.provide("bundle_manager", $BundleManager)
 	script_manager.provide("network_manager", $NetworkManager)
 	script_manager.provide("entity_manager", $EntityManager)
+	script_manager.provide("chunked_map", $ChunkedMap)
 	script_manager.load_libraries()
 
 func _init_bundle_manager():
