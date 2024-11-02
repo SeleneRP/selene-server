@@ -150,6 +150,7 @@ script = ExtResource("21_yyyb7")
 script = ExtResource("27_yd4gk")
 
 [node name="NetworkedCursor" type="Node" parent="NetworkHandlers"]
+unique_name_in_owner = true
 script = ExtResource("28_wvojh")
 
 [node name="NetworkStates" type="Node" parent="."]

@@ -2,7 +2,7 @@ class_name CursorScriptLibrary
 extends Node
 
 var network_manager: NetworkManager
-var networked_cursor: NetworkedCursor
+@onready var networked_cursor: NetworkedCursor = %NetworkedCursor
 
 func get_script_bindings():
     return {
