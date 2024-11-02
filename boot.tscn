@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=29 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://network/networked_camera.gd" id="21_yyyb7"]
 [ext_resource type="Script" path="res://entities/entity_manager.gd" id="22_07y74"]
 [ext_resource type="Script" path="res://network/networked_controller.gd" id="27_yd4gk"]
+[ext_resource type="Script" path="res://network/networked_cursor.gd" id="28_wvojh"]
 
 [node name="SeleneRoot" type="Node"]
 
@@ -143,6 +144,9 @@ script = ExtResource("21_yyyb7")
 
 [node name="NetworkedController" type="Node" parent="NetworkHandlers"]
 script = ExtResource("27_yd4gk")
+
+[node name="NetworkedCursor" type="Node" parent="NetworkHandlers"]
+script = ExtResource("28_wvojh")
 
 [node name="NetworkStates" type="Node" parent="."]
 
