@@ -32,22 +32,28 @@ func s_sync_camera_position(position: Vector2i, level: int):
 func set_camera_position(peer_id: int, position: Vector2i, level: int):
 	var state = get_network_state(peer_id)
 	if _set_camera_position_if_changed(peer_id, state, position, level):
+		print_verbose("[", peer_id, "] set_camera_position ", position, " ", level)
 		c_set_camera_position.rpc_id(peer_id, position, level)
 
 func set_camera_mode(peer_id: int, mode: CameraMode.Keys):
 	var state = get_network_state(peer_id)
 	state.mode = mode
+	print_verbose("[", peer_id, "] set_camera_mode ", mode)
 	c_set_camera_mode.rpc_id(peer_id, mode)
 
 func set_camera_target(peer_id: int, entity_id: int):
 	var state = get_network_state(peer_id)
 	state.target_entity_id = entity_id
+	print_verbose("[", peer_id, "] set_camera_target ", entity_id)
 	c_set_camera_target.rpc_id(peer_id, entity_id)
 
 func _try_set_camera_position_from_client(peer_id: int, position: Vector2i, level: int):
 	var state = get_network_state(peer_id)
 	if not CameraMode.is_authorative_on_client(state.mode):
+		print_rich("[color=red][", peer_id, "]Illegal set_camera_position request from non-authorative client[/color]")
+		print_verbose("[", peer_id, "] set_camera_position ", position, " ", level)
 		c_set_camera_position.rpc_id(peer_id, state.position, state.level)
+		print_verbose("[", peer_id, "] set_camera_mode ", state.mode)
 		c_set_camera_mode.rpc_id(peer_id, state.mode)
 		return
 	

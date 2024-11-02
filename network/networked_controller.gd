@@ -14,4 +14,5 @@ func set_controlled_entity(peer_id: int, entity_id: int):
 	var state = get_network_state(peer_id)
 	if state.controlled_entity_id != entity_id:
 		state.controlled_entity_id = entity_id
+		print_verbose("[", peer_id, "] set_controlled_entity ", entity_id)
 		c_set_controlled_entity.rpc_id(peer_id, entity_id)

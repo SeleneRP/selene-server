@@ -40,4 +40,5 @@ func send_chunk(peer_id: int, cell: Vector3i):
     var networked_map = Selene.get_networked_map()
     var tiles = _chunked_map.get_tiles_in_cell(cell)
     if not tiles.is_empty():
+        print_verbose("[", peer_id, "] set_tiles ", cell.z, " (", tiles.size(), " tiles)")
         networked_map.c_set_tiles.rpc_id(peer_id, tiles, cell.z)

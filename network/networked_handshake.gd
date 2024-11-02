@@ -19,14 +19,18 @@ func s_authenticate(_token: String):
 	peer_authenticated.emit(peer_id)
 
 	var set_status = func(status: String):
+		print_verbose("[", peer_id, "] set_login_status ", status)
 		c_set_login_status.rpc_id(peer_id, status)
 
 	var proceed = func(load_screen: String):
 		# Notify the client of the server's loaded bundles.
+		print_verbose("[", peer_id, "] set_load_screen ", load_screen)
 		c_set_load_screen.rpc_id(peer_id, load_screen)
+		print_verbose("[", peer_id, "] set_loaded_bundles ", bundle_manager.get_loaded_bundle_ids())
 		c_set_loaded_bundles.rpc_id(peer_id, bundle_manager.get_loaded_bundle_ids())
 
 	var cancel = func(reason: String):
+		print_verbose("[", peer_id, "] set_login_status ", reason)
 		c_set_login_status.rpc_id(peer_id, reason)
 		multiplayer.disconnect_peer(peer_id)
 
@@ -58,13 +62,16 @@ func s_verify_bundle_hashes(received_bundle_hashes: Dictionary):
 
 	# If no bundles are outdated, we can proceed to the next step.
 	if outdated_bundles.size() == 0:
+		print_verbose("[", peer_id, "] bundles_verified")
 		c_bundles_verified.rpc_id(peer_id)
 		peer_bundles_verified.emit(peer_id)
+		print_verbose("[", peer_id, "] load_bundles")
 		c_load_bundles.rpc_id(peer_id)
 		return
 
 	# Notify the client of their outdated bundles. From there on, the client can proceed to download the manifest and with that, any (partial) bundles.
 	peer_bundles_outdated.emit(peer_id, outdated_bundles)
+	print_verbose("[", peer_id, "] set_outdated_bundles ", outdated_bundles)
 	c_set_outdated_bundles.rpc_id(peer_id, outdated_bundles)
 
 @rpc("authority", "call_remote", "reliable")
@@ -83,4 +90,5 @@ func c_load_bundles():
 func s_bundles_loaded():
 	var peer_id = multiplayer.get_remote_sender_id()
 	peer_completed_loading.emit(peer_id)
+	print_verbose("[", peer_id, "] set_load_screen ''")
 	c_set_load_screen.rpc_id(peer_id, "")

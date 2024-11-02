@@ -1,1 +1,1 @@
-godot --headless
+godot --headless --verbose
