@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=30 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://network/network_listener.gd" id="10_6jcv2"]
 [ext_resource type="Script" path="res://common/maps/chunked_map.gd" id="10_m7qjm"]
 [ext_resource type="Script" path="res://scripting/controller_script_library.gd" id="10_ql5qa"]
+[ext_resource type="Script" path="res://scripting/cursor_script_library.gd" id="11_6pw6q"]
 [ext_resource type="Script" path="res://persistence/id_mappings_database.gd" id="11_a8x3t"]
 [ext_resource type="Script" path="res://bundles/bundle_manager.gd" id="12_ay6mw"]
 [ext_resource type="Script" path="res://network/networked_handshake.gd" id="12_bmodw"]
@@ -88,6 +89,9 @@ script = ExtResource("9_5reh8")
 
 [node name="ControllerScriptLibrary" type="Node" parent="Server/ScriptManager"]
 script = ExtResource("10_ql5qa")
+
+[node name="CursorScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("11_6pw6q")
 
 [node name="BundleBuilder" type="Node" parent="Server"]
 script = ExtResource("8_lxchw")

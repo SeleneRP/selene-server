@@ -1,4 +1,4 @@
-class_name ControllerScriptLibrary
+class_name CursorScriptLibrary
 extends Node
 
 var network_manager: NetworkManager
