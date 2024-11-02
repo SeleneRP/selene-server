@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bmev7fald0lyd"]
+[gd_scene load_steps=5 format=3 uid="uid://bmev7fald0lyd"]
 
 [ext_resource type="Script" path="res://network/state/networked_camera_state.gd" id="1_un7fg"]
 [ext_resource type="Script" path="res://network/state/networked_map_state.gd" id="2_db8fa"]
 [ext_resource type="Script" path="res://network/state/networked_controller_state.gd" id="3_vwvbo"]
+[ext_resource type="Script" path="res://network/state/networked_cursor_state.gd" id="4_6ib5j"]
 
 [node name="peer_template" type="Node"]
 
@@ -14,3 +15,6 @@ script = ExtResource("2_db8fa")
 
 [node name="NetworkedControllerState" type="Node" parent="."]
 script = ExtResource("3_vwvbo")
+
+[node name="NetworkedCursorState" type="Node" parent="."]
+script = ExtResource("4_6ib5j")
