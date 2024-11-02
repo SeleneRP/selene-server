@@ -48,11 +48,11 @@ func _register_client_join(callback):
 
 func _on_network_listener_peer_connected(peer_id: int):
 	for handler in _client_connected_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_network_listener_peer_disconnected(peer_id: int):
 	for handler in _client_disconnected_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_networked_handshake_peer_joined_queue(peer_id: int, set_status: Callable, proceed: Callable, cancel: Callable):
 	var proceeded = {}
@@ -60,27 +60,31 @@ func _on_networked_handshake_peer_joined_queue(peer_id: int, set_status: Callabl
 		var handler = _client_joined_queue_listeners[i]
 		var new_proceed = func(url: String):
 			proceeded[i] = url
-		handler.call(peer_id, set_status, new_proceed, cancel)
+		handle_lua_errors(handler.call(peer_id, set_status, new_proceed, cancel))
 		while not proceeded.has(i):
 			await get_tree().process_frame
 	proceed.call(proceeded[_client_joined_queue_listeners.size() - 1] if _client_joined_queue_listeners.size() > 0 else "")
 
 func _on_networked_handshake_peer_authenticated(peer_id:int):
 	for handler in _client_authenticated_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_networked_handshake_peer_authentication_failed(peer_id:int):
 	for handler in _client_authentication_failed_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_networked_handshake_peer_bundles_verified(peer_id:int):
 	for handler in _client_ready_to_join_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_networked_handshake_peer_completed_loading(peer_id:int):
 	for handler in _client_joined_listeners:
-		handler.call(peer_id)
+		handle_lua_errors(handler.call(peer_id))
 
 func _on_server_server_started():
 	for handler in _server_started_listeners:
-		handler.call()
+		handle_lua_errors(handler.call())
+
+func handle_lua_errors(result: Variant):
+	if result is LuaError:
+		print_rich("[color=red]", result.message, "[/color]")
