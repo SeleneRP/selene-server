@@ -3,6 +3,7 @@ extends Node
 
 signal log(message: String)
 signal script_printed(message: String)
+signal config_error(message: String)
 
 var vm: LuauVM
 
@@ -40,14 +41,9 @@ func load_into(server_config: ServerConfig):
 	else:
 		log.emit("[color=yellow]server.lua does not exist - generating...[/color]")
 		return _create_default_config(server_script_path)
-	var result = _apply_to(server_config)
-	if result.fatal:
-		log.emit("[color=red]FATAL: Configuration errors are preventing the server from loading.[/color]")
-	elif result.errors.size():
-		log.emit("[color=red]There are some issues with your configuration. Things may not work as expected.[/color]")
-	for error in result.errors:
-		log.emit("[color=red]- %s[/color]" % error)
-	return not result.fatal
+	if not _apply_to(server_config):
+		return false
+	return true
 
 func _evaluate_script(path: String):
 	var script = FileAccess.get_file_as_string(path)
@@ -55,27 +51,24 @@ func _evaluate_script(path: String):
 		return true
 	else:
 		var error = vm.lua_tostring(-1)
-		log.emit("[color=red]FATAL: Error loading %s: %s[/color]" % [path, error])
+		config_error.emit(error)
 		vm.lua_pop(1)
 		return false
 
 func _apply_to(server_config: ServerConfig):
-	var errors = []
-	var fatal = false
-
 	vm.lua_getglobal("port")
 	if not vm.lua_isnil(-1):
 		server_config.port = vm.luaL_checkint(-1)
 	if server_config.port == 0:
-		errors.append("port must not be 0, check server.lua")
-		fatal = true
+		config_error.emit("port must not be 0")
+		return false
 	vm.lua_pop(1)
 
 	vm.lua_getglobal("max_connections")
 	if not vm.lua_isnil(-1):
 		server_config.max_connections = vm.luaL_checkint(-1)
 	if server_config.max_connections <= 0:
-		errors.append("max_connections must be greater than 0, check server.lua")
+		config_error.emit("max_connections must be greater than 0")
 		server_config.max_connections = 32
 	vm.lua_pop(1)
 
@@ -93,10 +86,7 @@ func _apply_to(server_config: ServerConfig):
 	server_config.scripts = _scripts
 	server_config.maps = _maps
 
-	return {
-		"errors": errors,
-		"fatal": fatal
-	}
+	return true
 
 func _create_default_config(path: String):
 	var server_script_dir = path.get_base_dir()
