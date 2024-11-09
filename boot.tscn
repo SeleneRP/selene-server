@@ -35,8 +35,6 @@
 
 [node name="Server" type="Node" parent="."]
 script = ExtResource("1_nxu2j")
-bundles_dir = null
-server_scripts_dir = null
 
 [node name="VisualServer" type="CanvasLayer" parent="Server"]
 script = ExtResource("3_sogq1")
@@ -99,10 +97,6 @@ script = ExtResource("11_6pw6q")
 
 [node name="BundleBuilder" type="Node" parent="Server"]
 script = ExtResource("8_lxchw")
-bundles_dir = null
-bundle_sources_dir = null
-bundle_source_hash_database_path = null
-ignore_dirs = null
 
 [node name="BundleInstaller" type="Node" parent="Server"]
 script = ExtResource("4_mcltj")
@@ -118,30 +112,24 @@ script = ExtResource("6_isxax")
 
 [node name="ServerConfigLoader" type="Node" parent="Server"]
 script = ExtResource("24_kwq4o")
-bundles_dir = null
-server_scripts_dir = null
 
 [node name="MapManager" type="Node" parent="Server"]
 script = ExtResource("9_bbukl")
-bundles_dir = null
 
 [node name="NetworkListener" type="Node" parent="Server"]
 script = ExtResource("10_6jcv2")
 
 [node name="IdMappingsDatabase" type="Node" parent="Server"]
 script = ExtResource("11_a8x3t")
-path = null
 
 [node name="IdMappingsCache" type="Node" parent="Server"]
 script = ExtResource("17_lk4ih")
 
 [node name="BundleManager" type="Node" parent="Server"]
 script = ExtResource("12_ay6mw")
-client_bundle_hash_database_path = null
 
 [node name="BundleManifestLoader" type="Node" parent="Server"]
 script = ExtResource("22_jyp1e")
-bundles_dir = null
 
 [node name="ChunkedMap" type="Node" parent="Server"]
 unique_name_in_owner = true

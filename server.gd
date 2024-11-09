@@ -1,9 +1,6 @@
 class_name Server
 extends Node
 
-@export var bundles_dir = "run://bundles"
-@export var server_scripts_dir = "run://server_scripts"
-
 signal log(message: String)
 signal progress_log(key: String, label: String, progress: float)
 signal server_started
@@ -33,8 +30,8 @@ func _ready():
 
 	log.emit("[b]Selene Server v%s[/b]" % ProjectSettings.get_setting("application/config/version"))
 
-	DirAccess.make_dir_recursive_absolute(Selene.path(bundles_dir))
-	DirAccess.make_dir_recursive_absolute(Selene.path(server_scripts_dir))
+	DirAccess.make_dir_recursive_absolute(Selene.path(GlobalPaths.bundles_dir))
+	DirAccess.make_dir_recursive_absolute(Selene.path(GlobalPaths.server_scripts_dir))
 	log.emit("[color=gray]Base directory: %s[/color]" % Selene.globalize_path("run://"))
 
 	#_rebuild_bundles() TODO unfortunately the godot export seems to be failing without error message
@@ -77,7 +74,7 @@ func _install_bundles():
 	bundle_installer.bundle_installed.connect(func(bundle_id: String):
 		log.emit("[color=green]Bundle '%s' installed successfully[/color]" % bundle_id)
 	)
-	var installed_any = bundle_installer.install_bundles(Selene.path(bundles_dir))
+	var installed_any = bundle_installer.install_bundles(Selene.path(GlobalPaths.bundles_dir))
 	if not installed_any:
 		log.emit("[color=gray]No new bundles to install.[/color]")
 
@@ -93,7 +90,7 @@ func _refresh_client_bundle_cache():
 	client_bundle_cache_manager.bundle_repacked.connect(func(bundle_id: String):
 		log.emit("[color=green]Bundle '%s' repacked successfully[/color]" % bundle_id)
 	)
-	var repacked_any = client_bundle_cache_manager.refresh_cache(Selene.path(bundles_dir))
+	var repacked_any = client_bundle_cache_manager.refresh_cache(Selene.path(GlobalPaths.bundles_dir))
 	if not repacked_any:
 		log.emit("[color=gray]No changes detected in bundles.[/color]")
 
@@ -145,7 +142,7 @@ func _start_client_bundle_server():
 		var server = HttpServer.new()
 		server.name = "ClientBundleHttpServer"
 		server.port = server_config.client_bundle_port
-		var router = HttpFileRouter.new(Selene.path(client_bundle_cache_manager.client_bundle_cache_dir))
+		var router = HttpFileRouter.new(Selene.path(GlobalPaths.client_bundle_cache_dir))
 		server.register_router("/", router)
 		add_child(server)
 		server.start()

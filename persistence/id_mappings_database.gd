@@ -3,13 +3,11 @@ extends Node
 
 signal id_generated(scope: String, name: String, id: int)
 
-@export var path: String = "run://id_mappings.db"
-
 var db: SQLite = null
 
 func _ready():
 	db = SQLite.new()
-	db.path = Selene.path(path)
+	db.path = Selene.path(GlobalPaths.id_mappings_path)
 	db.verbosity_level = SQLite.QUIET
 	db.open_db()
 	db.query("CREATE TABLE IF NOT EXISTS mappings (id INTEGER PRIMARY KEY, name TEXT, scope TEXT, UNIQUE(name, scope))")

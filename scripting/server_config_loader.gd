@@ -1,9 +1,6 @@
 class_name ServerConfigLoader
 extends Node
 
-@export var bundles_dir = "run://bundles"
-@export var server_scripts_dir = "run://server_scripts"
-
 signal log(message: String)
 signal script_printed(message: String)
 
@@ -35,7 +32,7 @@ func _ready():
 	vm.lua_setglobal("load_map")
 
 func load_into(server_config: ServerConfig):
-	var server_script_path = Selene.path("run://server.lua")
+	var server_script_path = Selene.path(GlobalPaths.server_config_path)
 	if FileAccess.file_exists(server_script_path):
 		log.emit("[color=yellow]Loading server.lua[/color]")
 		if not _evaluate_script(server_script_path):
@@ -116,7 +113,7 @@ func _create_default_config(path: String):
 		return false
 
 func _load_all_bundles(_pvm: LuauVM):
-	var bundle_dirs = DirAccess.get_directories_at(Selene.path(bundles_dir))
+	var bundle_dirs = DirAccess.get_directories_at(Selene.path(GlobalPaths.bundles_dir))
 	for dir in bundle_dirs:
 		if dir.begins_with(".") or dir.ends_with(".disabled"):
 			continue
@@ -129,7 +126,7 @@ func _load_bundle(pvm: LuauVM):
 	return 0
 
 func _load_all_server_scripts(_pvm: LuauVM):
-	var bundle_dirs = DirAccess.get_directories_at(Selene.path(server_scripts_dir))
+	var bundle_dirs = DirAccess.get_directories_at(Selene.path(GlobalPaths.server_scripts_dir))
 	for dir in bundle_dirs:
 		if dir.begins_with("."):
 			continue

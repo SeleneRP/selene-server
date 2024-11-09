@@ -5,13 +5,11 @@ signal bundle_changes_detected(bundle_id: String)
 signal bundle_about_to_be_repacked(bundle_id: String)
 signal bundle_repacked(bundle_id: String)
 
-@export var client_bundle_cache_dir = "run://client_bundle_cache"
-@export var client_bundle_hash_database_path = "run://client_bundle_hashes.db"
 @export var ignore_dirs: Array[String] = ['server']
 
 func refresh_cache(bundle_dir: String):
 	var found = false
-	var hash_db = FileHashDatabase.new(Selene.path(client_bundle_hash_database_path))
+	var hash_db = FileHashDatabase.new(Selene.path(GlobalPaths.client_bundle_hash_database_path))
 	var dir_access = DirAccess.open(bundle_dir)
 	if dir_access:
 		dir_access.list_dir_begin()
@@ -41,8 +39,8 @@ func _cache_bundle(hash_db: FileHashDatabase, bundle_path: StringName):
 	return false
 
 func _repack_client_bundle(bundle_path):
-	DirAccess.make_dir_recursive_absolute(Selene.path(client_bundle_cache_dir))
-	var zip_file = Selene.path(client_bundle_cache_dir).path_join(bundle_path.get_file() + ".zip")
+	DirAccess.make_dir_recursive_absolute(Selene.path(GlobalPaths.client_bundle_cache_dir))
+	var zip_file = Selene.path(GlobalPaths.client_bundle_cache_dir).path_join(bundle_path.get_file() + ".zip")
 	bundle_about_to_be_repacked.emit(bundle_path.get_file())
 	FileUtils.zip(zip_file, bundle_path, ignore_dirs)
 	bundle_repacked.emit(bundle_path.get_file())

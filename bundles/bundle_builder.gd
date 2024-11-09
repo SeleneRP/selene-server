@@ -6,21 +6,18 @@ signal bundle_about_to_be_rebuilt(bundle_id: String)
 signal bundle_rebuilt(bundle_id: String)
 signal bundle_failed_to_rebuild(bundle_id: String, output: Array[String])
 
-@export var bundles_dir = "run://bundles"
-@export var bundle_sources_dir = "run://bundle_sources"
-@export var bundle_source_hash_database_path = "run://bundle_source_hashes.db"
 @export var ignore_dirs: Array[String] = ['.git', '.godot']
 
 func rebuild_sources():
 	var found = false
-	var hash_db = FileHashDatabase.new(Selene.path(bundle_source_hash_database_path))
-	var dir_access = DirAccess.open(Selene.path(bundle_sources_dir))
+	var hash_db = FileHashDatabase.new(Selene.path(GlobalPaths.bundle_source_hash_database_path))
+	var dir_access = DirAccess.open(Selene.path(GlobalPaths.bundle_sources_dir))
 	if dir_access:
 		dir_access.list_dir_begin()
 		var file = dir_access.get_next()
 		while file != "":
 			if dir_access.current_is_dir():
-				var bundle_path = Selene.path(bundle_sources_dir).path_join(file)
+				var bundle_path = Selene.path(GlobalPaths.bundle_sources_dir).path_join(file)
 				if _rebuild_bundle_if_neccessary(hash_db, bundle_path):
 					found = true
 			file = dir_access.get_next()
@@ -43,15 +40,15 @@ func _rebuild_bundle_if_neccessary(hash_db: FileHashDatabase, bundle_path: Strin
 	return false
 
 func _rebuild_bundle(bundle_path: String):
-	DirAccess.make_dir_recursive_absolute(Selene.path(bundles_dir))
-	var zip_file = Selene.globalize_path(bundles_dir.path_join(bundle_path.get_file() + ".zip"))
+	DirAccess.make_dir_recursive_absolute(Selene.path(GlobalPaths.bundles_dir))
+	var zip_file = Selene.globalize_path(GlobalPaths.bundles_dir.path_join(bundle_path.get_file() + ".zip"))
 	bundle_about_to_be_rebuilt.emit(bundle_path.get_file())
 	var godot_executable = OS.get_executable_path()
 	var export_preset = "Selene Bundle"
 	var output = []
 	var result = OS.execute(godot_executable, ["--path", bundle_path, "--headless", "--export-pack", export_preset, zip_file], output, true, true)
 	if result == 0:
-		var logs_dir = Selene.path("run://logs")
+		var logs_dir = Selene.path(GlobalPaths.logs_dir)
 		DirAccess.make_dir_recursive_absolute(logs_dir)
 		var log_file = logs_dir.path_join(bundle_path.get_file() + ".build.log")
 		var log_file_access = FileAccess.open(log_file, FileAccess.WRITE)

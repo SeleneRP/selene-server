@@ -3,12 +3,11 @@ extends Node
 
 signal bundle_loaded(bundle)
 
-@export var client_bundle_hash_database_path = "run://client_bundle_hashes.db"
 var client_bundle_hash_database: FileHashDatabase
 var _loaded_bundles = {}
 
 func _ready():
-	client_bundle_hash_database = FileHashDatabase.new(Selene.path(client_bundle_hash_database_path))
+	client_bundle_hash_database = FileHashDatabase.new(Selene.path(GlobalPaths.client_bundle_hash_database_path))
 
 func load(bundle):
 	if bundle.id in _loaded_bundles:
