@@ -1,7 +1,7 @@
 [gd_scene load_steps=31 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
-[ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
+[ext_resource type="Script" path="res://addons/selene-core/scripting/script_manager.gd" id="3_crgm2"]
 [ext_resource type="Script" path="res://visual_server.gd" id="3_sogq1"]
 [ext_resource type="Script" path="res://bundles/bundle_installer.gd" id="4_mcltj"]
 [ext_resource type="Script" path="res://scripting/map_script_library.gd" id="5_3cf2n"]
@@ -26,7 +26,7 @@
 [ext_resource type="Script" path="res://network/networked_map.gd" id="20_sa8v8"]
 [ext_resource type="Script" path="res://network/networked_camera.gd" id="21_yyyb7"]
 [ext_resource type="Script" path="res://entities/entity_manager.gd" id="22_07y74"]
-[ext_resource type="Script" path="res://scripting/bundle_manifest_loader.gd" id="22_jyp1e"]
+[ext_resource type="Script" path="res://addons/selene-core/scripting/bundle_manifest_loader.gd" id="22_jyp1e"]
 [ext_resource type="Script" path="res://scripting/server_config_loader.gd" id="24_kwq4o"]
 [ext_resource type="Script" path="res://network/networked_controller.gd" id="27_yd4gk"]
 [ext_resource type="Script" path="res://network/networked_cursor.gd" id="28_wvojh"]
