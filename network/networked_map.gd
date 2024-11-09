@@ -67,8 +67,8 @@ func _watch_chunk(peer_id: int, state: NetworkedMapState, cell: Vector3i):
 			print_verbose("[", peer_id, "] spawn_entity ", entity.id, " ", entity.position)
 			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
 			for visual in entity.get_visuals():
-				print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.color)
-				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.color)
+				print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.tint)
+				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.tint)
 
 func _unwatch_chunk(_peer_id: int, state: NetworkedMapState, cell: Vector3i):
 	state.watched_chunks.erase(cell)
@@ -81,8 +81,8 @@ func _on_entity_spawned(entity: Entity):
 			print_verbose("[", peer_id, "] spawn_entity ", entity.id, " ", entity.position)
 			c_spawn_entity.rpc_id(peer_id, entity.id, entity.position)
 			for visual in entity.get_visuals():
-				print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.color)
-				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.color)
+				print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.tint)
+				c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.tint)
 
 func _on_entity_despawned(entity: Entity):
 	for peer_id in multiplayer.get_peers():
@@ -97,16 +97,16 @@ func _on_entity_visual_added(entity: Entity, visual: EntityVisual):
 		var state = get_network_state(peer_id)
 		var watched_chunks = state.watched_chunks
 		if watched_chunks.has(entity.cell):
-			print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.color)
-			c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.color)
+			print_verbose("[", peer_id, "] add_entity_visual ", entity.id, " ", visual.id, " ", visual.visual_name, " ", visual.tint)
+			c_add_entity_visual.rpc_id(peer_id, entity.id, visual.id, visual.visual_name, visual.tint)
 
 func _on_entity_visual_changed(entity: Entity, visual: EntityVisual):
 	for peer_id in multiplayer.get_peers():
 		var state = get_network_state(peer_id)
 		var watched_chunks = state.watched_chunks
 		if watched_chunks.has(entity.cell):
-			print_verbose("[", peer_id, "] set_entity_visual_tint ", entity.id, " ", visual.id, " ", visual.color)
-			c_set_entity_visual_tint.rpc_id(peer_id, entity.id, visual.id, visual.color)
+			print_verbose("[", peer_id, "] set_entity_visual_tint ", entity.id, " ", visual.id, " ", visual.tint)
+			c_set_entity_visual_tint.rpc_id(peer_id, entity.id, visual.id, visual.tint)
 
 func _on_entity_visual_removed(entity: Entity, visual: EntityVisual):
 	for peer_id in multiplayer.get_peers():

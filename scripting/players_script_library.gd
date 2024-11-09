@@ -8,6 +8,16 @@ extends Node
 @onready var PlayerJoined = $PlayerJoined
 @onready var PlayerDisconnected = $PlayerDisconnected
 
+func __lua_load_library(pvm: LuauVM):
+	pvm.lua_newtable()
+	pvm.lua_pushinteger(CameraMode.Keys.Static)
+	pvm.lua_setfield(-2, "Static")
+	pvm.lua_pushinteger(CameraMode.Keys.Following)
+	pvm.lua_setfield(-2, "Following")
+	pvm.lua_pushinteger(CameraMode.Keys.FreeFlight)
+	pvm.lua_setfield(-2, "FreeFlight")
+	pvm.lua_setglobal("CameraMode")
+
 func _get_proxy(peer_id: int):
 	return %NetworkManager.get_network_state(peer_id, "PlayerScriptProxy")
 

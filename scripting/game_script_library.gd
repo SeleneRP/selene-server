@@ -11,7 +11,7 @@ func __lua_load_library(vm: LuauVM):
 	vm.lua_pushobject(self)
 	vm.lua_setglobal("game")
 
-	for child in _latest.get_children():
+	for child in $Latest.get_children():
 		if child.has_method("__lua_load_library"):
 			child.__lua_load_library(vm)
 

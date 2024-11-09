@@ -23,6 +23,8 @@ func for_peer(peer_id: int):
 		peer_node = peer_template.instantiate()
 		peer_node.name = str(peer_id)
 		for child in peer_node.get_children():
+			if "manager" in child:
+				child.manager = self
 			if "peer_id" in child:
 				child.peer_id = peer_id
 			for key in provided.keys():

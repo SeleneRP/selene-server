@@ -14,6 +14,7 @@ func create_entity():
     var entity = Entity.new()
     entity.id = last_added_id
     entity.name = str(last_added_id)
+    entity.manager = self
     add_child(entity)
     return entity
 

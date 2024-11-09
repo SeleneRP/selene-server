@@ -1,1 +1,2 @@
 godot --headless --verbose
+pause
