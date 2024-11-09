@@ -9,11 +9,9 @@ var _loaded_bundles = {}
 func _ready():
 	client_bundle_hash_database = FileHashDatabase.new(Selene.path(GlobalPaths.client_bundle_hash_database_path))
 
-func load(bundle):
-	if bundle.id in _loaded_bundles:
-		return
-	_loaded_bundles[bundle.id] = bundle
-	bundle_loaded.emit(bundle)
+func load_bundle(manifest: BundleManifest):
+	_loaded_bundles[manifest.id] = manifest
+	bundle_loaded.emit(manifest)
 
 func get_loaded_bundle_ids() -> Array[String]:
 	var names: Array[String] = []

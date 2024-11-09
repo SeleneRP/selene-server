@@ -41,7 +41,8 @@ func _ready():
 	_init_bundle_manager($BundleManager)
 	if not _load_server_config():
 		return
-	_load_server_scripts($ServerConfig, $ScriptManager)
+	_load_bundles($BundleManager, $ServerConfig)
+	_load_server_scripts($ScriptManager, $ServerConfig)
 	_start_client_bundle_server()
 	_init_network_manager()
 	if not _start_network_listen():
@@ -109,13 +110,19 @@ func _init_map_manager():
 	)
 
 func _init_bundle_manager(bundle_manager: BundleManager):
-	bundle_manager.bundle_loaded.connect(func(bundle):
-		log.emit("[color=yellow]Loading bundle: %s (%s)[/color]" % [bundle.name, bundle.id])
-		for entrypoint in bundle.server_entrypoints:
+	bundle_manager.bundle_loaded.connect(func(manifest):
+		log.emit("[color=yellow]Loading bundle: %s (%s)[/color]" % [manifest.name, manifest.id])
+		for entrypoint in manifest.server_entrypoints:
 			%ScriptManager.load_module(entrypoint)
 	)
 
-func _load_server_scripts(config: ServerConfig, script_manager: ScriptManager):
+func _load_bundles(bundle_manager: BundleManager, config: ServerConfig):
+	for bundle_id in config.bundles:
+		var manifest = %BundleManifestLoader.load_manifest(bundle_id)
+		if manifest:
+			bundle_manager.load_bundle(manifest)
+
+func _load_server_scripts(script_manager: ScriptManager, config: ServerConfig):
 	for script in config.scripts:
 		script_manager.load_module(script)
 
@@ -174,3 +181,6 @@ func _on_bundle_manifest_loader_script_printed(message: String):
 
 func _on_bundle_manifest_loader_log(message: String):
 	log.emit(message)
+
+func _on_bundle_manifest_loader_manifest_error(bundle_id: String, message: String):
+	log.emit("Manifest error in %s: %s" % [bundle_id, message])

@@ -68,6 +68,7 @@ custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 
 [node name="ScriptManager" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("3_crgm2")
 
 [node name="GameScriptLibrary" type="Node" parent="Server/ScriptManager"]
@@ -119,8 +120,6 @@ script = ExtResource("4_mcltj")
 
 [node name="ClientBundleCacheManager" type="Node" parent="Server"]
 script = ExtResource("5_qfgg5")
-client_bundle_cache_dir = null
-client_bundle_hash_database_path = null
 ignore_dirs = null
 
 [node name="ServerConfig" type="Node" parent="Server"]
@@ -142,9 +141,11 @@ script = ExtResource("11_a8x3t")
 script = ExtResource("17_lk4ih")
 
 [node name="BundleManager" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("12_ay6mw")
 
 [node name="BundleManifestLoader" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("22_jyp1e")
 
 [node name="ChunkedMap" type="Node" parent="Server"]
@@ -190,17 +191,17 @@ script = ExtResource("28_wvojh")
 [connection signal="script_printed" from="Server/ScriptManager" to="Server" method="_on_script_manager_script_printed"]
 [connection signal="log" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_log"]
 [connection signal="script_printed" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_script_printed"]
-[connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_network_listener_peer_connected"]
-[connection signal="peer_disconnected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_disconnected"]
+[connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
 [connection signal="peer_disconnected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_network_listener_peer_disconnected"]
+[connection signal="peer_disconnected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_disconnected"]
 [connection signal="id_generated" from="Server/IdMappingsDatabase" to="Server/IdMappingsCache" method="_on_id_mappings_database_id_generated"]
-[connection signal="log" from="Server/BundleManifestLoader" to="Server" method="_on_bundle_manifest_loader_log"]
+[connection signal="manifest_error" from="Server/BundleManifestLoader" to="Server" method="_on_bundle_manifest_loader_manifest_error"]
 [connection signal="script_printed" from="Server/BundleManifestLoader" to="Server" method="_on_bundle_manifest_loader_script_printed"]
 [connection signal="peer_authenticated" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_authenticated"]
 [connection signal="peer_authentication_failed" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_authentication_failed"]
-[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="NetworkHandlers/NetworkedMappings" method="_on_networked_handshake_peer_bundles_verified"]
 [connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_bundles_verified"]
+[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="NetworkHandlers/NetworkedMappings" method="_on_networked_handshake_peer_bundles_verified"]
 [connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_completed_loading"]
 [connection signal="peer_joined_queue" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_joined_queue"]
 [connection signal="camera_moved" from="NetworkHandlers/NetworkedCamera" to="NetworkHandlers/NetworkedMap" method="_on_networked_camera_camera_moved"]
