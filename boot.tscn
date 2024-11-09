@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=31 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://addons/selene-core/scripting/script_manager.gd" id="3_crgm2"]
@@ -8,15 +8,12 @@
 [ext_resource type="Script" path="res://scripting/map_script_library.gd" id="5_3cf2n"]
 [ext_resource type="Script" path="res://bundles/client_bundle_cache_manager.gd" id="5_qfgg5"]
 [ext_resource type="Script" path="res://server_config.gd" id="6_isxax"]
-[ext_resource type="Script" path="res://scripting/camera_script_library.gd" id="7_w8dwx"]
 [ext_resource type="Script" path="res://bundles/bundle_builder.gd" id="8_lxchw"]
 [ext_resource type="Script" path="res://scripting/system_script_library.gd" id="8_vc8pj"]
 [ext_resource type="Script" path="res://scripting/entity_script_library.gd" id="9_5reh8"]
 [ext_resource type="Script" path="res://maps/map_manager.gd" id="9_bbukl"]
 [ext_resource type="Script" path="res://network/network_listener.gd" id="10_6jcv2"]
 [ext_resource type="Script" path="res://common/maps/chunked_map.gd" id="10_m7qjm"]
-[ext_resource type="Script" path="res://scripting/controller_script_library.gd" id="10_ql5qa"]
-[ext_resource type="Script" path="res://scripting/cursor_script_library.gd" id="11_6pw6q"]
 [ext_resource type="Script" path="res://scripting/players_script_library.gd" id="11_00564"]
 [ext_resource type="Script" path="res://persistence/id_mappings_database.gd" id="11_a8x3t"]
 [ext_resource type="Script" path="res://bundles/bundle_manager.gd" id="12_ay6mw"]
@@ -81,20 +78,8 @@ script = ExtResource("4_boiy5")
 [node name="MapScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("5_3cf2n")
 
-[node name="CameraScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
-script = ExtResource("7_w8dwx")
-
-[node name="SystemScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
-script = ExtResource("8_vc8pj")
-
-[node name="EntityScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
+[node name="Entities" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("9_5reh8")
-
-[node name="ControllerScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
-script = ExtResource("10_ql5qa")
-
-[node name="CursorScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
-script = ExtResource("11_6pw6q")
 
 [node name="Players" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("11_00564")
@@ -122,6 +107,9 @@ script = ExtResource("13_6wxy8")
 
 [node name="ServerStarted" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest/Server"]
 script = ExtResource("12_ovkf4")
+
+[node name="System" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
+script = ExtResource("8_vc8pj")
 
 [node name="BundleBuilder" type="Node" parent="Server"]
 script = ExtResource("8_lxchw")

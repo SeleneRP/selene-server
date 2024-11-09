@@ -8,20 +8,20 @@ extends Node
 @onready var PlayerJoined = $PlayerJoined
 @onready var PlayerDisconnected = $PlayerDisconnected
 
-func get_proxy(peer_id: int):
+func _get_proxy(peer_id: int):
 	return %NetworkManager.get_network_state(peer_id, "PlayerScriptProxy")
 
 func _on_networked_handshake_peer_completed_loading(peer_id: int):
-	PlayerJoined.invoke([get_proxy(peer_id)])
+	PlayerJoined.invoke([_get_proxy(peer_id)])
 
 func _on_networked_handshake_peer_bundles_verified(peer_id: int):
-	PlayerReadyToJoin.invoke([get_proxy(peer_id)])
+	PlayerReadyToJoin.invoke([_get_proxy(peer_id)])
 
 func _on_networked_handshake_peer_authentication_failed(peer_id: int):
-	PlayerAuthenticationFailed.invoke([get_proxy(peer_id)])
+	PlayerAuthenticationFailed.invoke([_get_proxy(peer_id)])
 
 func _on_networked_handshake_peer_authenticated(peer_id: int):
-	PlayerAuthenticated.invoke([get_proxy(peer_id)])
+	PlayerAuthenticated.invoke([_get_proxy(peer_id)])
 
 func _on_networked_handshake_peer_joined_queue(peer_id: int, set_status: Callable, proceed: Callable, cancel: Callable):
 	#var proceeded = {}
@@ -36,7 +36,7 @@ func _on_networked_handshake_peer_joined_queue(peer_id: int, set_status: Callabl
 	proceed.call("")
 
 func _on_network_listener_peer_disconnected(peer_id: int):
-	PlayerDisconnected.invoke([get_proxy(peer_id)])
+	PlayerDisconnected.invoke([_get_proxy(peer_id)])
 
 func _on_network_listener_peer_connected(peer_id: int):
-	PlayerConnected.invoke([get_proxy(peer_id)])
+	PlayerConnected.invoke([_get_proxy(peer_id)])

@@ -10,28 +10,44 @@ extends Node
 var last_added_visual_id = 0
 
 func clear_visuals():
-    for child in get_children():
-        if child is EntityVisual:
-            remove_child(child)
+	for child in get_children():
+		if child is EntityVisual:
+			remove_child(child)
 
 func add_visual(visual_name: String):
-    last_added_visual_id += 1
-    var visual = EntityVisual.new()
-    visual.id = last_added_visual_id
-    visual.name = "visual#" + str(last_added_visual_id)
-    visual.visual_name = visual_name
-    add_child(visual)
-    return visual
+	last_added_visual_id += 1
+	var visual = EntityVisual.new()
+	visual.id = last_added_visual_id
+	visual.name = "visual#" + str(last_added_visual_id)
+	visual.visual_name = visual_name
+	visual.removed_by_script.connect(func():
+		%EntityManager.entity_visual_removed.emit(self, visual)
+	)
+	visual.tint_changed.connect(func(_tint):
+		%EntityManager.entity_visual_changed.emit(self, visual)
+	)
+	add_child(visual)
+	%EntityManager.entity_visual_added.emit(self, visual)
+	return visual
 
 func get_visuals():
-    var visuals = []
-    for child in get_children():
-        if child is EntityVisual:
-            visuals.append(child)
-    return visuals
+	var visuals = []
+	for child in get_children():
+		if child is EntityVisual:
+			visuals.append(child)
+	return visuals
 
 func get_data():
-    return data
+	return data
 
 func is_spawned():
-    return map != ""
+	return map != ""
+
+func _lua_AddEntityVisual(pvm: LuauVM):
+	var visual_name = pvm.luaL_checkstring(2)
+	var visual = add_visual(visual_name)
+	pvm.lua_pushobject(visual)
+
+func _lua_Spawn(pvm: LuauVM):
+	var map_id = pvm.luaL_checkstring(2)
+	%EntityManager.spawn_entity(id, map_id)

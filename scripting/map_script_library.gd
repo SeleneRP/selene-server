@@ -6,12 +6,6 @@ var map_manager: MapManager
 var chunked_map: ChunkedMap
 var id_mappings_cache: IdMappingsCache
 
-func get_script_bindings():
-	return {
-		"load_map" = _load_map,
-		"get_tile" = _get_tile
-	}
-
 func _load_map(bundle_id: String, map_name: String):
 	var map = map_manager.load_map(bundle_id, map_name)
 	if not map:
