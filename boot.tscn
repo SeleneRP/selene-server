@@ -1,10 +1,9 @@
-[gd_scene load_steps=30 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=31 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://scripting/script_manager.gd" id="3_crgm2"]
 [ext_resource type="Script" path="res://visual_server.gd" id="3_sogq1"]
 [ext_resource type="Script" path="res://bundles/bundle_installer.gd" id="4_mcltj"]
-[ext_resource type="Script" path="res://scripting/bundle_script_library.gd" id="4_n6o33"]
 [ext_resource type="Script" path="res://scripting/map_script_library.gd" id="5_3cf2n"]
 [ext_resource type="Script" path="res://bundles/client_bundle_cache_manager.gd" id="5_qfgg5"]
 [ext_resource type="Script" path="res://scripting/server_script_events.gd" id="6_f6olg"]
@@ -27,6 +26,8 @@
 [ext_resource type="Script" path="res://network/networked_map.gd" id="20_sa8v8"]
 [ext_resource type="Script" path="res://network/networked_camera.gd" id="21_yyyb7"]
 [ext_resource type="Script" path="res://entities/entity_manager.gd" id="22_07y74"]
+[ext_resource type="Script" path="res://scripting/bundle_manifest_loader.gd" id="22_jyp1e"]
+[ext_resource type="Script" path="res://scripting/server_config_loader.gd" id="24_kwq4o"]
 [ext_resource type="Script" path="res://network/networked_controller.gd" id="27_yd4gk"]
 [ext_resource type="Script" path="res://network/networked_cursor.gd" id="28_wvojh"]
 
@@ -69,28 +70,29 @@ layout_mode = 2
 [node name="ScriptManager" type="Node" parent="Server"]
 script = ExtResource("3_crgm2")
 
-[node name="BundleScriptLibrary" type="Node" parent="Server/ScriptManager"]
-script = ExtResource("4_n6o33")
+[node name="GameScriptLibrary" type="Node" parent="Server/ScriptManager"]
 
-[node name="MapScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="Latest" type="Node" parent="Server/ScriptManager/GameScriptLibrary"]
+
+[node name="MapScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("5_3cf2n")
 
-[node name="CameraScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="CameraScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("7_w8dwx")
 
-[node name="ServerScriptEvents" type="Node" parent="Server/ScriptManager"]
+[node name="ServerScriptEvents" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("6_f6olg")
 
-[node name="SystemScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="SystemScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("8_vc8pj")
 
-[node name="EntityScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="EntityScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("9_5reh8")
 
-[node name="ControllerScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="ControllerScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("10_ql5qa")
 
-[node name="CursorScriptLibrary" type="Node" parent="Server/ScriptManager"]
+[node name="CursorScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("11_6pw6q")
 
 [node name="BundleBuilder" type="Node" parent="Server"]
@@ -104,6 +106,9 @@ script = ExtResource("5_qfgg5")
 
 [node name="ServerConfig" type="Node" parent="Server"]
 script = ExtResource("6_isxax")
+
+[node name="ServerConfigLoader" type="Node" parent="Server"]
+script = ExtResource("24_kwq4o")
 
 [node name="MapManager" type="Node" parent="Server"]
 script = ExtResource("9_bbukl")
@@ -120,15 +125,21 @@ script = ExtResource("17_lk4ih")
 [node name="BundleManager" type="Node" parent="Server"]
 script = ExtResource("12_ay6mw")
 
+[node name="BundleManifestLoader" type="Node" parent="Server"]
+script = ExtResource("22_jyp1e")
+
 [node name="ChunkedMap" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("10_m7qjm")
 
 [node name="NetworkManager" type="Node" parent="Server" node_paths=PackedStringArray("handler_container", "state_container")]
+unique_name_in_owner = true
 script = ExtResource("12_sahqm")
 handler_container = NodePath("../../NetworkHandlers")
 state_container = NodePath("../../NetworkStates")
 
 [node name="EntityManager" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("22_07y74")
 
 [node name="NetworkHandlers" type="Node" parent="."]
@@ -155,16 +166,20 @@ script = ExtResource("28_wvojh")
 
 [node name="NetworkStates" type="Node" parent="."]
 
-[connection signal="server_started" from="Server" to="Server/ScriptManager/ServerScriptEvents" method="_on_server_server_started"]
-[connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/ServerScriptEvents" method="_on_network_listener_peer_connected"]
+[connection signal="server_started" from="Server" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_server_server_started"]
+[connection signal="log" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_log"]
+[connection signal="script_printed" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_script_printed"]
+[connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_network_listener_peer_connected"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
-[connection signal="peer_disconnected" from="Server/NetworkListener" to="Server/ScriptManager/ServerScriptEvents" method="_on_network_listener_peer_disconnected"]
+[connection signal="peer_disconnected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_network_listener_peer_disconnected"]
 [connection signal="peer_disconnected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_disconnected"]
 [connection signal="id_generated" from="Server/IdMappingsDatabase" to="Server/IdMappingsCache" method="_on_id_mappings_database_id_generated"]
-[connection signal="peer_authenticated" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_authenticated"]
-[connection signal="peer_authentication_failed" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_authentication_failed"]
-[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_bundles_verified"]
+[connection signal="log" from="Server/BundleManifestLoader" to="Server" method="_on_bundle_manifest_loader_log"]
+[connection signal="script_printed" from="Server/BundleManifestLoader" to="Server" method="_on_bundle_manifest_loader_script_printed"]
+[connection signal="peer_authenticated" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_authenticated"]
+[connection signal="peer_authentication_failed" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_authentication_failed"]
+[connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_bundles_verified"]
 [connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="NetworkHandlers/NetworkedMappings" method="_on_networked_handshake_peer_bundles_verified"]
-[connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_completed_loading"]
-[connection signal="peer_joined_queue" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/ServerScriptEvents" method="_on_networked_handshake_peer_joined_queue"]
+[connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_completed_loading"]
+[connection signal="peer_joined_queue" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_joined_queue"]
 [connection signal="camera_moved" from="NetworkHandlers/NetworkedCamera" to="NetworkHandlers/NetworkedMap" method="_on_networked_camera_camera_moved"]

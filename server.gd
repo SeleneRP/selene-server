@@ -2,6 +2,7 @@ class_name Server
 extends Node
 
 @export var bundles_dir = "server://bundles"
+@export var server_scripts_dir = "server://server_scripts"
 
 signal log(message: String)
 signal progress_log(key: String, label: String, progress: float)
@@ -31,15 +32,17 @@ func _ready():
 	$VisualServer.bind_server(self)
 
 	log.emit("[b]Selene Server v%s[/b]" % ProjectSettings.get_setting("application/config/version"))
+
+	DirAccess.make_dir_recursive_absolute(Selene.path(bundles_dir))
+	DirAccess.make_dir_recursive_absolute(Selene.path(server_scripts_dir))
 	log.emit("[color=gray]Base directory: %s[/color]" % Selene.resolve_path("server://"))
 
 	#_rebuild_bundles() TODO unfortunately the godot export seems to be failing without error message
 	_install_bundles()
 	_refresh_client_bundle_cache()
 	_init_map_manager()
-	_init_script_manager()
-	_init_bundle_manager()
-	if not _load_server_script():
+	_init_bundle_manager($BundleManager)
+	if not _load_server_config():
 		return
 	_start_client_bundle_server()
 	_init_network_manager()
@@ -107,31 +110,18 @@ func _init_map_manager():
 		map.merge_into($ChunkedMap, $IdMappingsCache)
 	)
 
-func _init_script_manager():
-	var script_manager: ScriptManager = $ScriptManager
-	script_manager.provide("map_manager", $MapManager)
-	script_manager.provide("bundle_manager", $BundleManager)
-	script_manager.provide("network_manager", $NetworkManager)
-	script_manager.provide("entity_manager", $EntityManager)
-	script_manager.provide("chunked_map", $ChunkedMap)
-	script_manager.provide("networked_camera", %NetworkHandlers/NetworkedCamera)
-	script_manager.provide("networked_controller", %NetworkHandlers/NetworkedController)
-	script_manager.load_libraries()
-
-func _init_bundle_manager():
-	var bundle_manager: BundleManager = $BundleManager
-	var script_manager: ScriptManager = $ScriptManager
+func _init_bundle_manager(bundle_manager: BundleManager):
 	bundle_manager.bundle_loaded.connect(func(bundle):
 		log.emit("[color=yellow]Loading bundle: %s (%s)[/color]" % [bundle.name, bundle.id])
-		for entrypoint in bundle.entrypoints:
-			var error = script_manager.evaluate_package(entrypoint)
-			if error is LuaError:
-				log.emit("[color=red]Error loading entrypoint %s (code LUA%03d): %s[/color]" % [entrypoint, error.type, error.message])
 		for entrypoint in bundle.server_entrypoints:
-			var error = script_manager.evaluate_package(entrypoint)
-			if error is LuaError:
-				log.emit("[color=red]Error loading entrypoint %s (code LUA%03d): %s[/color]" % [entrypoint, error.type, error.message])
+			pass # TODO
+			#var error = script_manager.evaluate_package(entrypoint)
+			#if error is LuaError:
+			#	log.emit("[color=red]Error loading entrypoint %s (code LUA%03d): %s[/color]" % [entrypoint, error.type, error.message])
 	)
+
+func _load_server_scripts(config: ServerConfig, script_manager: ScriptManager):
+	script_manager.require()
 
 func _init_network_manager():
 	var network_manager: NetworkManager = $NetworkManager
@@ -142,44 +132,10 @@ func _init_network_manager():
 	network_manager.provide("entity_manager", $EntityManager)
 	network_manager.provide("networked_camera", %NetworkHandlers/NetworkedCamera)
 
-func _load_server_script():
-	var script_manager: ScriptManager = $ScriptManager
+func _load_server_config():
+	var server_config_loader = $ServerConfigLoader
 	var server_config: ServerConfig = $ServerConfig
-	var server_script_path = Selene.path("server://server.lua")
-	if FileAccess.file_exists(server_script_path):
-		log.emit("[color=yellow]Loading server.lua[/color]")
-		
-		var script_error = script_manager.evaluate_file(server_script_path)
-		if script_error is LuaError:
-			log.emit("[color=red]FATAL: Error loading server.lua (code LUA%03d): %s[/color]" % [script_error.type, script_error.message])
-			return false
-		var result = server_config.load_from_script_globals(script_manager)
-		if result.fatal:
-			log.emit("[color=red]FATAL: Configuration errors are preventing the server from loading.[/color]")
-		elif result.errors.size():
-			log.emit("[color=red]There are some issues with your configuration. Things may not work as expected.[/color]")
-		for error in result.errors:
-			log.emit("[color=red]- %s[/color]" % error)
-		if result.fatal:
-			return false
-	else:
-		log.emit("[color=yellow]server.lua does not exist - generating...[/color]")
-		var server_script_dir = server_script_path.get_base_dir()
-		var make_dir_error = DirAccess.make_dir_recursive_absolute(server_script_dir)
-		if make_dir_error != OK:
-			log.emit("[color=red]FATAL: Error creating server directory at %s (code GD%03d)[/color]" % [server_script_dir, make_dir_error])
-			return false
-		var file = FileAccess.open(server_script_path, FileAccess.WRITE)
-		if file:
-			var server_script_template = FileAccess.get_file_as_string("res://server.default.lua")
-			file.store_string(server_script_template)
-			file.close()
-			log.emit("[color=green]A fresh server.lua file has been generated at %s. Please review it and make changes as neccessary.[/color]" % Selene.resolve_path(server_script_path))
-		else:
-			var file_open_error = FileAccess.get_open_error()
-			log.emit("[color=red]FATAL: Error generating server.lua (code GD%03d)[/color]" % file_open_error)
-			return false
-	return true
+	return server_config_loader.load_into(server_config)
 
 func _start_client_bundle_server():
 	var server_config: ServerConfig = $ServerConfig
@@ -210,4 +166,16 @@ func _start_network_listen():
 	return true
 
 func _on_script_manager_script_printed(message: String):
+	log.emit(message)
+
+func _on_server_config_loader_script_printed(message: String):
+	log.emit(message)
+
+func _on_server_config_loader_log(message: String):
+	log.emit(message)
+
+func _on_bundle_manifest_loader_script_printed(message: String):
+	log.emit(message)
+
+func _on_bundle_manifest_loader_log(message: String):
 	log.emit(message)

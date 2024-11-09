@@ -1,9 +1,9 @@
 class_name NetworkedMap
 extends Node
 
-var network_manager: NetworkManager
-var chunked_map: ChunkedMap
-var entity_manager: EntityManager
+@onready var network_manager: NetworkManager = %NetworkManager
+@onready var chunked_map: ChunkedMap = %ChunkedMap
+@onready var entity_manager: EntityManager = %EntityManager
 
 func _ready():
 	entity_manager.entity_spawned.connect(_on_entity_spawned)

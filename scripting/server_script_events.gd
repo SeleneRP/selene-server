@@ -86,5 +86,6 @@ func _on_server_server_started():
 		handle_lua_errors(handler.call())
 
 func handle_lua_errors(result: Variant):
-	if result is LuaError:
-		print_rich("[color=red]", result.message, "[/color]")
+	pass
+	# TODO if result is LuaError:
+	# TODO 	print_rich("[color=red]", result.message, "[/color]")
