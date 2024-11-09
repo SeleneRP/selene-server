@@ -1,0 +1,6 @@
+[submodule "addons/selene-sdk"]
+	path = addons/selene-sdk
+	url = git@github.com:SeleneRP/selene-sdk.git
+[submodule "addons/selene-core"]
+	path = addons/selene-core
+	url = git@github.com:SeleneRP/selene-core.git
