@@ -41,6 +41,7 @@ func _ready():
 	_init_bundle_manager($BundleManager)
 	if not _load_server_config():
 		return
+	_load_maps($MapManager, $ServerConfig)
 	_load_bundles($BundleManager, $ServerConfig)
 	_load_server_scripts($ScriptManager, $ServerConfig)
 	_start_client_bundle_server()
@@ -115,6 +116,11 @@ func _init_bundle_manager(bundle_manager: BundleManager):
 		for entrypoint in manifest.server_entrypoints:
 			%ScriptManager.load_module(entrypoint)
 	)
+
+func _load_maps(map_manager: MapManager, config: ServerConfig):
+	for map_id in config.maps:
+		var parts = map_id.split(":")
+		map_manager.load_map(parts[0], parts[1])
 
 func _load_bundles(bundle_manager: BundleManager, config: ServerConfig):
 	for bundle_id in config.bundles:
