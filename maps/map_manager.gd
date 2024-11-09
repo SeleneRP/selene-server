@@ -1,7 +1,7 @@
 class_name MapManager
 extends Node
 
-@export var bundles_dir = "server://bundles"
+@export var bundles_dir = "run://bundles"
 
 signal map_about_to_be_loaded(bundle_id: String, map_name: String)
 signal map_loaded(map: SourceTileMap)

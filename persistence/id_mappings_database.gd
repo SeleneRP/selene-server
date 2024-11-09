@@ -3,7 +3,7 @@ extends Node
 
 signal id_generated(scope: String, name: String, id: int)
 
-@export var path: String = "server://id_mappings.db"
+@export var path: String = "run://id_mappings.db"
 
 var db: SQLite = null
 

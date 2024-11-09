@@ -6,9 +6,9 @@ signal bundle_about_to_be_rebuilt(bundle_id: String)
 signal bundle_rebuilt(bundle_id: String)
 signal bundle_failed_to_rebuild(bundle_id: String, output: Array[String])
 
-@export var bundles_dir = "server://bundles"
-@export var bundle_sources_dir = "server://bundle_sources"
-@export var bundle_source_hash_database_path = "server://bundle_source_hashes.db"
+@export var bundles_dir = "run://bundles"
+@export var bundle_sources_dir = "run://bundle_sources"
+@export var bundle_source_hash_database_path = "run://bundle_source_hashes.db"
 @export var ignore_dirs: Array[String] = ['.git', '.godot']
 
 func rebuild_sources():
@@ -44,14 +44,14 @@ func _rebuild_bundle_if_neccessary(hash_db: FileHashDatabase, bundle_path: Strin
 
 func _rebuild_bundle(bundle_path: String):
 	DirAccess.make_dir_recursive_absolute(Selene.path(bundles_dir))
-	var zip_file = Selene.resolve_path(Selene.path(bundles_dir).path_join(bundle_path.get_file() + ".zip"))
+	var zip_file = Selene.globalize_path(bundles_dir.path_join(bundle_path.get_file() + ".zip"))
 	bundle_about_to_be_rebuilt.emit(bundle_path.get_file())
 	var godot_executable = OS.get_executable_path()
 	var export_preset = "Selene Bundle"
 	var output = []
 	var result = OS.execute(godot_executable, ["--path", bundle_path, "--headless", "--export-pack", export_preset, zip_file], output, true, true)
 	if result == 0:
-		var logs_dir = Selene.path("server://logs")
+		var logs_dir = Selene.path("run://logs")
 		DirAccess.make_dir_recursive_absolute(logs_dir)
 		var log_file = logs_dir.path_join(bundle_path.get_file() + ".build.log")
 		var log_file_access = FileAccess.open(log_file, FileAccess.WRITE)

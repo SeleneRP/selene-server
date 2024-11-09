@@ -3,7 +3,7 @@ extends Node
 
 signal bundle_loaded(bundle)
 
-@export var client_bundle_hash_database_path = "server://client_bundle_hashes.db"
+@export var client_bundle_hash_database_path = "run://client_bundle_hashes.db"
 var client_bundle_hash_database: FileHashDatabase
 var _loaded_bundles = {}
 

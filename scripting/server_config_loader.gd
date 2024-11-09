@@ -1,8 +1,8 @@
 class_name ServerConfigLoader
 extends Node
 
-@export var bundles_dir = "server://bundles"
-@export var server_scripts_dir = "server://server_scripts"
+@export var bundles_dir = "run://bundles"
+@export var server_scripts_dir = "run://server_scripts"
 
 signal log(message: String)
 signal script_printed(message: String)
@@ -35,7 +35,7 @@ func _ready():
 	vm.lua_setglobal("load_map")
 
 func load_into(server_config: ServerConfig):
-	var server_script_path = Selene.path("server://server.lua")
+	var server_script_path = Selene.path("run://server.lua")
 	if FileAccess.file_exists(server_script_path):
 		log.emit("[color=yellow]Loading server.lua[/color]")
 		if not _evaluate_script(server_script_path):

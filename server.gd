@@ -1,8 +1,8 @@
 class_name Server
 extends Node
 
-@export var bundles_dir = "server://bundles"
-@export var server_scripts_dir = "server://server_scripts"
+@export var bundles_dir = "run://bundles"
+@export var server_scripts_dir = "run://server_scripts"
 
 signal log(message: String)
 signal progress_log(key: String, label: String, progress: float)
@@ -35,7 +35,7 @@ func _ready():
 
 	DirAccess.make_dir_recursive_absolute(Selene.path(bundles_dir))
 	DirAccess.make_dir_recursive_absolute(Selene.path(server_scripts_dir))
-	log.emit("[color=gray]Base directory: %s[/color]" % Selene.resolve_path("server://"))
+	log.emit("[color=gray]Base directory: %s[/color]" % Selene.globalize_path("run://"))
 
 	#_rebuild_bundles() TODO unfortunately the godot export seems to be failing without error message
 	_install_bundles()

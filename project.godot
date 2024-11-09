@@ -16,10 +16,6 @@ run/main_scene="res://boot.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Selene="*res://selene.gd"
-
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

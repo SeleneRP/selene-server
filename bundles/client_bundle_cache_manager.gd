@@ -5,8 +5,8 @@ signal bundle_changes_detected(bundle_id: String)
 signal bundle_about_to_be_repacked(bundle_id: String)
 signal bundle_repacked(bundle_id: String)
 
-@export var client_bundle_cache_dir = "server://client_bundle_cache"
-@export var client_bundle_hash_database_path = "server://client_bundle_hashes.db"
+@export var client_bundle_cache_dir = "run://client_bundle_cache"
+@export var client_bundle_hash_database_path = "run://client_bundle_hashes.db"
 @export var ignore_dirs: Array[String] = ['server']
 
 func refresh_cache(bundle_dir: String):
