@@ -1,7 +1,11 @@
 class_name GameScriptLibrary
 extends Node
 
-@onready var _latest = $Latest
+const LATEST_VERSION = "Latest"
+
+@onready var _latest := $Latest
+
+var date_regex = RegEx.create_from_string("^([0-9]+)-([0-9]+)-([0-9]+)$")
 
 func __lua_load_library(vm: LuauVM):
 	vm.lua_pushobject(self)
@@ -12,11 +16,23 @@ func __lua_load_library(vm: LuauVM):
 			child.__lua_load_library(vm)
 
 func _resolve_version_holder(version: String) -> Node:
-	if version == "Latest":
+	if version.is_empty() or version == LATEST_VERSION:
 		return _latest
 	
-	# TODO pick version based on latest date that is before or equals to
+	var best_holder := _latest
+	var best_time := 0
+	var request_match = date_regex.search(version)
+	if request_match:
+		var max_supported_unix_time = Time.get_unix_time_from_datetime_string(version)
+		for child in get_children():
+			var holder_match = date_regex.search(child.name)
+			if holder_match:
+				var holder_unix_time = Time.get_unix_time_from_datetime_string(child.name)
+				if holder_unix_time <= max_supported_unix_time and holder_unix_time > best_time:
+					best_holder = child
 
+	if best_holder:
+		return best_holder
 	print_rich("[color=yellow]Unknown version %s, falling back to latest[/color]" % version)
 	return _latest
 
