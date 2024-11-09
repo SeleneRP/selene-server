@@ -5,3 +5,7 @@ extends Node
 @export var max_connections = 32
 @export var client_bundle_port = 8090
 @export var client_bundle_base_url = "http://localhost:%d/" % client_bundle_port
+
+@export var bundles: Array[String] = []
+@export var scripts: Array[String] = []
+@export var maps: Array[String] = []

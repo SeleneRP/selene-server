@@ -89,6 +89,10 @@ func _apply_to(server_config: ServerConfig):
 		server_config.client_bundle_base_url = vm.luaL_checkstring(-1)
 	vm.lua_pop(1)
 
+	server_config.bundles = _bundles
+	server_config.scripts = _scripts
+	server_config.maps = _maps
+
 	return {
 		"errors": errors,
 		"fatal": fatal
@@ -126,12 +130,12 @@ func _load_bundle(pvm: LuauVM):
 	return 0
 
 func _load_all_server_scripts(_pvm: LuauVM):
-	var bundle_dirs = DirAccess.get_directories_at(Selene.path(GlobalPaths.server_scripts_dir))
-	for dir in bundle_dirs:
-		if dir.begins_with("."):
+	var script_files = DirAccess.get_files_at(Selene.path(GlobalPaths.server_scripts_dir))
+	for file in script_files:
+		if file.begins_with("."):
 			continue
-		if dir.ends_with(".lua") or dir.ends_with(".luau"):
-			_bundles.append(dir)
+		if file.ends_with(".lua") or file.ends_with(".luau"):
+			_scripts.append(file.trim_suffix(".luau").trim_suffix(".lua").replace("/", "."))
 	return 0
 
 func _load_server_script(pvm: LuauVM):

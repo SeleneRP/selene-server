@@ -1,8 +1,9 @@
-[gd_scene load_steps=31 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=35 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://addons/selene-core/scripting/script_manager.gd" id="3_crgm2"]
 [ext_resource type="Script" path="res://visual_server.gd" id="3_sogq1"]
+[ext_resource type="Script" path="res://scripting/game_script_library.gd" id="4_boiy5"]
 [ext_resource type="Script" path="res://bundles/bundle_installer.gd" id="4_mcltj"]
 [ext_resource type="Script" path="res://scripting/map_script_library.gd" id="5_3cf2n"]
 [ext_resource type="Script" path="res://bundles/client_bundle_cache_manager.gd" id="5_qfgg5"]
@@ -17,10 +18,13 @@
 [ext_resource type="Script" path="res://common/maps/chunked_map.gd" id="10_m7qjm"]
 [ext_resource type="Script" path="res://scripting/controller_script_library.gd" id="10_ql5qa"]
 [ext_resource type="Script" path="res://scripting/cursor_script_library.gd" id="11_6pw6q"]
+[ext_resource type="Script" path="res://scripting/players_script_library.gd" id="11_00564"]
 [ext_resource type="Script" path="res://persistence/id_mappings_database.gd" id="11_a8x3t"]
 [ext_resource type="Script" path="res://bundles/bundle_manager.gd" id="12_ay6mw"]
 [ext_resource type="Script" path="res://network/networked_handshake.gd" id="12_bmodw"]
+[ext_resource type="Script" path="res://scripting/script_event_dispatcher.gd" id="12_ovkf4"]
 [ext_resource type="Script" path="res://network/network_manager.gd" id="12_sahqm"]
+[ext_resource type="Script" path="res://scripting/server_script_library.gd" id="13_6wxy8"]
 [ext_resource type="Script" path="res://network/networked_mappings.gd" id="13_dfpsd"]
 [ext_resource type="Script" path="res://common/id_mappings_cache.gd" id="17_lk4ih"]
 [ext_resource type="Script" path="res://network/networked_map.gd" id="20_sa8v8"]
@@ -71,6 +75,7 @@ layout_mode = 2
 script = ExtResource("3_crgm2")
 
 [node name="GameScriptLibrary" type="Node" parent="Server/ScriptManager"]
+script = ExtResource("4_boiy5")
 
 [node name="Latest" type="Node" parent="Server/ScriptManager/GameScriptLibrary"]
 
@@ -94,6 +99,18 @@ script = ExtResource("10_ql5qa")
 
 [node name="CursorScriptLibrary" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
 script = ExtResource("11_6pw6q")
+
+[node name="Players" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
+script = ExtResource("11_00564")
+
+[node name="PlayerJoined" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest/Players"]
+script = ExtResource("12_ovkf4")
+
+[node name="Server" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest"]
+script = ExtResource("13_6wxy8")
+
+[node name="ServerStarted" type="Node" parent="Server/ScriptManager/GameScriptLibrary/Latest/Server"]
+script = ExtResource("12_ovkf4")
 
 [node name="BundleBuilder" type="Node" parent="Server"]
 script = ExtResource("8_lxchw")
@@ -170,6 +187,8 @@ script = ExtResource("28_wvojh")
 [node name="NetworkStates" type="Node" parent="."]
 
 [connection signal="server_started" from="Server" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_server_server_started"]
+[connection signal="server_started" from="Server" to="Server/ScriptManager/GameScriptLibrary/Latest/Server" method="_on_server_server_started"]
+[connection signal="script_printed" from="Server/ScriptManager" to="Server" method="_on_script_manager_script_printed"]
 [connection signal="log" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_log"]
 [connection signal="script_printed" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_script_printed"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_network_listener_peer_connected"]
@@ -184,5 +203,6 @@ script = ExtResource("28_wvojh")
 [connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_bundles_verified"]
 [connection signal="peer_bundles_verified" from="NetworkHandlers/NetworkedHandshake" to="NetworkHandlers/NetworkedMappings" method="_on_networked_handshake_peer_bundles_verified"]
 [connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_completed_loading"]
+[connection signal="peer_completed_loading" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_networked_handshake_peer_completed_loading"]
 [connection signal="peer_joined_queue" from="NetworkHandlers/NetworkedHandshake" to="Server/ScriptManager/GameScriptLibrary/Latest/ServerScriptEvents" method="_on_networked_handshake_peer_joined_queue"]
 [connection signal="camera_moved" from="NetworkHandlers/NetworkedCamera" to="NetworkHandlers/NetworkedMap" method="_on_networked_camera_camera_moved"]

@@ -41,6 +41,7 @@ func _ready():
 	_init_bundle_manager($BundleManager)
 	if not _load_server_config():
 		return
+	_load_server_scripts($ServerConfig, $ScriptManager)
 	_start_client_bundle_server()
 	_init_network_manager()
 	if not _start_network_listen():
@@ -111,14 +112,12 @@ func _init_bundle_manager(bundle_manager: BundleManager):
 	bundle_manager.bundle_loaded.connect(func(bundle):
 		log.emit("[color=yellow]Loading bundle: %s (%s)[/color]" % [bundle.name, bundle.id])
 		for entrypoint in bundle.server_entrypoints:
-			pass # TODO
-			#var error = script_manager.evaluate_package(entrypoint)
-			#if error is LuaError:
-			#	log.emit("[color=red]Error loading entrypoint %s (code LUA%03d): %s[/color]" % [entrypoint, error.type, error.message])
+			%ScriptManager.load_module(entrypoint)
 	)
 
 func _load_server_scripts(config: ServerConfig, script_manager: ScriptManager):
-	script_manager.require()
+	for script in config.scripts:
+		script_manager.load_module(script)
 
 func _init_network_manager():
 	var network_manager: NetworkManager = $NetworkManager
@@ -136,7 +135,6 @@ func _load_server_config():
 
 func _start_client_bundle_server():
 	var server_config: ServerConfig = $ServerConfig
-	var client_bundle_cache_manager: ClientBundleCacheManager = $ClientBundleCacheManager
 	if server_config.client_bundle_port:
 		log.emit("[color=gray]Starting local file server on port %d to serve client bundles...[/color]" % server_config.client_bundle_port)
 		var server = HttpServer.new()

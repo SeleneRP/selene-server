@@ -3,7 +3,8 @@ extends Node
 
 @onready var _latest = $Latest
 
-func lua_load_library(vm: LuauVM):
+func __lua_load_library(vm: LuauVM):
+    print("loaded game lib")
     vm.lua_pushobject(self)
     vm.lua_setglobal("game")
 
@@ -19,16 +20,17 @@ func _resolve_version_holder(version: String) -> Node:
 func _get_service(p_name: String, version: String) -> Node:
     var version_holder = _resolve_version_holder(version)
     var service = version_holder.get_node_or_null(p_name)
-    if service.get_parent() != self:
+    if service and service.get_parent() != version_holder:
         return null
     return service
 
 func _lua_GetService(pvm: LuauVM):
-    var name = pvm.luaL_checkstring(1)
-    var version = pvm.luaL_checkstring(2) if pvm.lua_isstring(2) else "Latest"
-    var service = _get_service(name, version)
+    var service_name = pvm.luaL_checkstring(2)
+    var version = pvm.luaL_checkstring(3) if pvm.lua_isstring(3) else "Latest"
+    var service = _get_service(service_name, version)
     if service:
         pvm.lua_pushobject(service)
+        return 1
     else:
-        pvm.lua_pushnil()
-    return 1
+        pvm.luaL_error("Unknown service '%s'" % service_name)
+        return 0

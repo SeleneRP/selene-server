@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmev7fald0lyd"]
+[gd_scene load_steps=6 format=3 uid="uid://bmev7fald0lyd"]
 
 [ext_resource type="Script" path="res://network/state/networked_camera_state.gd" id="1_un7fg"]
 [ext_resource type="Script" path="res://network/state/networked_map_state.gd" id="2_db8fa"]
 [ext_resource type="Script" path="res://network/state/networked_controller_state.gd" id="3_vwvbo"]
 [ext_resource type="Script" path="res://network/state/networked_cursor_state.gd" id="4_6ib5j"]
+[ext_resource type="Script" path="res://scripting/player_script_proxy.gd" id="5_rigfe"]
 
 [node name="peer_template" type="Node"]
 
@@ -18,3 +19,6 @@ script = ExtResource("3_vwvbo")
 
 [node name="NetworkedCursorState" type="Node" parent="."]
 script = ExtResource("4_6ib5j")
+
+[node name="PlayerScriptProxy" type="Node" parent="."]
+script = ExtResource("5_rigfe")
