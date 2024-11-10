@@ -1,8 +1,9 @@
 class_name NetworkedCameraState
 extends Node
 
-var entity_manager: EntityManager
-var networked_camera: NetworkedCamera
+var manager: NetworkManager
+@onready var entity_manager: EntityManager = Selene.get_root().get_node("%EntityManager")
+@onready var networked_camera: NetworkedCamera = manager.get_networked("NetworkedCamera")
 
 var peer_id: int
 var position: Vector2i

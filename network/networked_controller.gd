@@ -1,7 +1,7 @@
 class_name NetworkedController
 extends Node
 
-var network_manager: NetworkManager
+@onready var network_manager := %NetworkManager
 
 func get_network_state(peer_id: int) -> NetworkedControllerState:
 	return network_manager.get_network_state(peer_id, "NetworkedControllerState")

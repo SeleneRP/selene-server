@@ -1,7 +1,7 @@
 class_name NetworkedCamera
 extends Node
 
-var network_manager: NetworkManager
+@onready var network_manager := %NetworkManager
 
 signal camera_moved(peer_id: int, old_position: Vector2i, position: Vector2i)
 signal camera_level_changed(peer_id: int, old_level: int, level: int)

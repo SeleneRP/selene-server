@@ -1,11 +1,12 @@
 class_name NetworkedCursor
 extends Node
 
-var manager: NetworkManager
+@onready var network_manager := %NetworkManager
+
 var last_added_visual_id := 0
 
 func get_network_state(peer_id: int):
-	return manager.get_network_state(peer_id, "NetworkedCursorState")
+	return network_manager.get_network_state(peer_id, "NetworkedCursorState")
 
 @rpc("authority", "call_remote", "reliable")
 func c_add_cursor_visual(_visual_id: int, _visual_name: String, _tint: Color):

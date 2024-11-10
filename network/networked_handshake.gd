@@ -1,8 +1,8 @@
 class_name NetworkedHandshake
 extends Node
 
-var server_config: ServerConfig
-var bundle_manager: BundleManager
+@onready var server_config := %ServerConfig
+@onready var bundle_manager := %BundleManager
 
 signal peer_authenticated(peer_id: int)
 signal peer_authentication_failed(peer_id: int)

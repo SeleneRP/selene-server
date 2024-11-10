@@ -123,6 +123,7 @@ script = ExtResource("5_qfgg5")
 ignore_dirs = null
 
 [node name="ServerConfig" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("6_isxax")
 
 [node name="ServerConfigLoader" type="Node" parent="Server"]
@@ -138,6 +139,7 @@ script = ExtResource("10_6jcv2")
 script = ExtResource("11_a8x3t")
 
 [node name="IdMappingsCache" type="Node" parent="Server"]
+unique_name_in_owner = true
 script = ExtResource("17_lk4ih")
 
 [node name="BundleManager" type="Node" parent="Server"]

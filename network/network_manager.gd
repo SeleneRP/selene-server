@@ -5,17 +5,6 @@ extends Node
 @export var state_container: Node
 
 var peer_template = preload ("res://peer_template.tscn")
-var provided = {}
-
-func provide(key: String, value: Variant):
-	provided[key] = value
-	if handler_container:
-		for child in handler_container.get_children():
-			if key in child:
-				child[key] = provided[key]
-
-func _ready():
-	provide("network_manager", self)
 
 func for_peer(peer_id: int):
 	var peer_node = state_container.get_node_or_null(str(peer_id))
@@ -27,9 +16,6 @@ func for_peer(peer_id: int):
 				child.manager = self
 			if "peer_id" in child:
 				child.peer_id = peer_id
-			for key in provided.keys():
-				if key in child:
-					child[key] = provided[key]
 		state_container.add_child(peer_node)
 	return peer_node
 

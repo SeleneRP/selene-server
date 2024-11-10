@@ -37,7 +37,6 @@ func _ready():
 	_load_bundles($BundleManager, $ServerConfig)
 	_load_server_scripts($ScriptManager, $ServerConfig)
 	_start_client_bundle_server()
-	_init_network_manager()
 	if not _start_network_listen():
 		return
 
@@ -123,15 +122,6 @@ func _load_bundles(bundle_manager: BundleManager, config: ServerConfig):
 func _load_server_scripts(script_manager: ScriptManager, config: ServerConfig):
 	for script in config.scripts:
 		script_manager.load_module(script)
-
-func _init_network_manager():
-	var network_manager: NetworkManager = $NetworkManager
-	network_manager.provide("bundle_manager", $BundleManager)
-	network_manager.provide("chunked_map", $ChunkedMap)
-	network_manager.provide("server_config", $ServerConfig)
-	network_manager.provide("id_mappings_cache", $IdMappingsCache)
-	network_manager.provide("entity_manager", $EntityManager)
-	network_manager.provide("networked_camera", %NetworkHandlers/NetworkedCamera)
 
 func _load_server_config():
 	var server_config_loader = $ServerConfigLoader

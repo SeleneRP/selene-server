@@ -1,7 +1,7 @@
 class_name NetworkedMappings
 extends Node
 
-var id_mappings_cache: IdMappingsCache
+@onready var id_mappings_cache := %IdMappingsCache
 
 func bind():
 	id_mappings_cache.mappings_changed.connect(_on_mappings_changed)
