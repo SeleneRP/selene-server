@@ -2,12 +2,11 @@ class_name VisualServer
 extends CanvasLayer
 
 func _ready():
+	SeleneInstance.log.connect(_on_log)
+
 	var is_headless = DisplayServer.get_name() == "headless" or "--headless" in OS.get_cmdline_user_args()
 	if is_headless:
 		queue_free()
 
-func bind_server(server: Server):
-	server.log.connect(_on_server_log)
-
-func _on_server_log(message: String):
+func _on_log(message: String, level: LogLevel.Keys, tags: Array[String]):
 	%LogOutput.text = %LogOutput.get_text() + message + "\n"

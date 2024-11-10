@@ -1,7 +1,6 @@
 class_name ServerConfigLoader
 extends Node
 
-signal log(message: String)
 signal script_printed(message: String)
 signal config_error(message: String)
 
@@ -35,11 +34,11 @@ func _ready():
 func load_into(server_config: ServerConfig):
 	var server_script_path = Selene.path(GlobalPaths.server_config_path)
 	if FileAccess.file_exists(server_script_path):
-		log.emit("[color=yellow]Loading server.lua[/color]")
+		Selene.log("Loading server.lua", ["pending"])
 		if not _evaluate_script(server_script_path):
 			return false
 	else:
-		log.emit("[color=yellow]server.lua does not exist - generating...[/color]")
+		Selene.log("server.lua does not exist - generating...", ["pending"])
 		return _create_default_config(server_script_path)
 	if not _apply_to(server_config):
 		return false
@@ -92,18 +91,18 @@ func _create_default_config(path: String):
 	var server_script_dir = path.get_base_dir()
 	var make_dir_error = DirAccess.make_dir_recursive_absolute(server_script_dir)
 	if make_dir_error != OK:
-		log.emit("[color=red]FATAL: Error creating server directory at %s (code GD%03d)[/color]" % [server_script_dir, make_dir_error])
+		Selene.log_error("Error creating server directory at %s (code GD%03d)" % [server_script_dir, make_dir_error], ["fatal"])
 		return false
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	if file:
 		var server_script_template = FileAccess.get_file_as_string("res://server.default.lua")
 		file.store_string(server_script_template)
 		file.close()
-		log.emit("[color=green]A fresh server.lua file has been generated at %s. Please review it and make changes as neccessary.[/color]" % path)
+		Selene.log("A fresh server.lua file has been generated at %s. Please review it and make changes as neccessary." % path, ["success"])
 		return true
 	else:
 		var file_open_error = FileAccess.get_open_error()
-		log.emit("[color=red]FATAL: Error generating server.lua (code GD%03d)[/color]" % file_open_error)
+		Selene.log_error("Error generating server.lua (code GD%03d)" % file_open_error, ["fatal"])
 		return false
 
 func _load_all_bundles(_pvm: LuauVM):

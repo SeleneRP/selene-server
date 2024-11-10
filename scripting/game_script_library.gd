@@ -33,7 +33,7 @@ func _resolve_version_holder(version: String) -> Node:
 
 	if best_holder:
 		return best_holder
-	print_rich("[color=yellow]Unknown version %s, falling back to latest[/color]" % version)
+	Selene.log_warning("Unknown version %s, falling back to latest" % version)
 	return _latest
 
 func _get_service(p_name: String, version: String) -> Node:

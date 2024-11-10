@@ -16,9 +16,9 @@ func start(port: int, max_connections: int) -> int:
 	return error
 
 func _on_peer_connected(id):
-	print_rich("[color=green]Peer %d connected[/color]" % id)
+	Selene.log("Peer %d connected" % id)
 	peer_connected.emit(id)
 
 func _on_peer_disconnected(id):
-	print_rich("[color=orange]Peer %d disconnected[/color]" % id)
+	Selene.log("Peer %d disconnected" % id)
 	peer_disconnected.emit(id)

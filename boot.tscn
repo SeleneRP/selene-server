@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://b23cn84ocwhon"]
+[gd_scene load_steps=31 format=3 uid="uid://b23cn84ocwhon"]
 
 [ext_resource type="Script" path="res://server.gd" id="1_nxu2j"]
 [ext_resource type="Script" path="res://addons/selene-core/scripting/script_manager.gd" id="3_crgm2"]
@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://entities/entity_manager.gd" id="22_07y74"]
 [ext_resource type="Script" path="res://addons/selene-core/scripting/bundle_manifest_loader.gd" id="22_jyp1e"]
 [ext_resource type="Script" path="res://scripting/server_config_loader.gd" id="24_kwq4o"]
+[ext_resource type="Script" path="res://addons/selene-core/selene_log_printer.gd" id="24_tlikl"]
 [ext_resource type="Script" path="res://network/networked_controller.gd" id="27_yd4gk"]
 [ext_resource type="Script" path="res://network/networked_cursor.gd" id="28_wvojh"]
 
@@ -34,6 +35,9 @@
 
 [node name="Server" type="Node" parent="."]
 script = ExtResource("1_nxu2j")
+
+[node name="SeleneLogPrinter" type="Node" parent="Server"]
+script = ExtResource("24_tlikl")
 
 [node name="VisualServer" type="CanvasLayer" parent="Server"]
 script = ExtResource("3_sogq1")
@@ -183,10 +187,7 @@ script = ExtResource("28_wvojh")
 
 [node name="NetworkStates" type="Node" parent="."]
 
-[connection signal="server_started" from="Server" to="Server/ScriptManager/GameScriptLibrary/Latest/Server" method="_on_server_server_started"]
 [connection signal="script_printed" from="Server/ScriptManager" to="Server" method="_on_script_manager_script_printed"]
-[connection signal="log" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_log"]
-[connection signal="script_printed" from="Server/ServerConfigLoader" to="Server" method="_on_server_config_loader_script_printed"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_network_listener_peer_connected"]
 [connection signal="peer_connected" from="Server/NetworkListener" to="NetworkStates" method="_on_network_listener_peer_connected"]
 [connection signal="peer_disconnected" from="Server/NetworkListener" to="Server/ScriptManager/GameScriptLibrary/Latest/Players" method="_on_network_listener_peer_disconnected"]

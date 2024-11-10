@@ -38,7 +38,7 @@ func merge_into(chunked_map: ChunkedMap, id_mappings_cache: IdMappingsCache):
 		var level = layer.level
 		for tile in layer.tiles:
 			if tile.id == null or tile.x == null or tile.y == null:
-				print_rich("[color=red]Error when merging map. Map '%s' seems to be corrupt.[/color]" % name)
+				Selene.log_error("Error when merging map. Map '%s' seems to be corrupt." % name)
 				return
 				
 			var tile_name = mappings.get(str(tile.id))
@@ -68,9 +68,9 @@ func merge_into(chunked_map: ChunkedMap, id_mappings_cache: IdMappingsCache):
 		var invalid_tiles_of_id = invalid_tiles_by_id[invalid_tile_id]
 		var example_tile = invalid_tiles_of_id[0]
 		if invalid_tiles_of_id.size() > 1:
-			print_rich("[color=red]Invalid tile id %d at (%d, %d) (%d more)[/color]" % [example_tile.id, x + example_tile.x, y + example_tile.y, invalid_tiles_of_id.size() - 1])
+			Selene.log_error("Invalid tile id %d at (%d, %d) (%d more)" % [example_tile.id, x + example_tile.x, y + example_tile.y, invalid_tiles_of_id.size() - 1])
 		else:
-			print_rich("[color=red]Invalid tile id %d at (%d, %d)[/color]" % [example_tile.id, x + example_tile.x, y + example_tile.y])
+			Selene.log_error("Invalid tile id %d at (%d, %d)" % [example_tile.id, x + example_tile.x, y + example_tile.y])
 	for chunk in changed_chunks.values():
 		chunked_map.tiles_changed.emit(chunk.tiles, chunk.level)
-	print_rich("[color=green]Merged %d chunks of map '%s'[/color]" % [changed_chunks.size(), name])
+	Selene.log("Merged %d chunks of map '%s'" % [changed_chunks.size(), name], ["success"])

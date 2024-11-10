@@ -50,7 +50,7 @@ func set_camera_target(peer_id: int, entity_id: int):
 func _try_set_camera_position_from_client(peer_id: int, position: Vector2i, level: int):
 	var state = get_network_state(peer_id)
 	if not CameraMode.is_authorative_on_client(state.mode):
-		print_rich("[color=red][", peer_id, "]Illegal set_camera_position request from non-authorative client[/color]")
+		Selene.log_warning("[%d]Illegal set_camera_position request from non-authorative client" % peer_id)
 		print_verbose("[", peer_id, "] set_camera_position ", position, " ", level)
 		c_set_camera_position.rpc_id(peer_id, state.position, state.level)
 		print_verbose("[", peer_id, "] set_camera_mode ", state.mode)

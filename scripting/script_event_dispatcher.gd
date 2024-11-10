@@ -19,5 +19,5 @@ func invoke(args: Array):
 		if error and error is String and error != "<null>":
 			errors.append(error)
 	for error in errors:
-		print_rich("[color=red]Error in %s event handler: %s[/color]" % [name, error])
+		Selene.log_error("Error in %s event handler: %s" % [name, error])
 	return errors

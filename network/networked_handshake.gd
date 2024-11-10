@@ -57,7 +57,7 @@ func s_verify_bundle_hashes(received_bundle_hashes: Dictionary):
 	for bundle_id in bundle_manager.get_loaded_bundle_ids():
 		var expected_hash = bundle_manager.get_client_bundle_hash(bundle_id)
 		if not bundle_id in received_bundle_hashes or expected_hash != received_bundle_hashes[bundle_id]:
-			print_rich("[color=gray]Outdated bundle %s - expected %s but got %s[/color]" % [bundle_id, expected_hash, received_bundle_hashes.get(bundle_id, "<missing>")])
+			Selene.log("Outdated bundle %s - expected %s but got %s" % [bundle_id, expected_hash, received_bundle_hashes.get(bundle_id, "<missing>")])
 			outdated_bundles[bundle_id] = "%s/%s.zip" % [server_config.client_bundle_base_url.trim_suffix("/"), bundle_id]
 
 	# If no bundles are outdated, we can proceed to the next step.
